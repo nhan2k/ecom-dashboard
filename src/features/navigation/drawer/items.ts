@@ -1,5 +1,5 @@
 import { NavItemsInterface } from './type'
-import { MoveToInbox as InboxIcon } from '@mui/icons-material'
+// import { MoveToInbox as InboxIcon } from '@mui/icons-material'
 import { DashboardIcon } from '@assets/icons'
 import {
   PeopleAlt as PeopleAltIcon,

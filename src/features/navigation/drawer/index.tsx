@@ -29,6 +29,7 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
   const handleDrawerOpen = () => {
+    console.log(mobileMoreAnchorEl)
     setOpen(true)
   }
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -38,7 +39,7 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
     setOpen(false)
   }
 
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
+  // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
