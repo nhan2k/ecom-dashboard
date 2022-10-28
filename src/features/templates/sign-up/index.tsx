@@ -14,13 +14,14 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useForm, SubmitHandler } from 'react-hook-form'
 
+const theme = createTheme()
+
 interface IFormInput {
   firstName: string
   lastName: string
   email: string
   password: string
 }
-const theme = createTheme()
 
 export default function SignUp() {
   const {
@@ -28,7 +29,7 @@ export default function SignUp() {
     handleSubmit,
     formState: { errors },
   } = useForm<IFormInput>()
-  const onSubmit: SubmitHandler<IFormInput> = (data) => console.log(data)
+  const onSubmit: SubmitHandler<IFormInput> = (data: any) => console.log(data)
 
   return (
     <ThemeProvider theme={theme}>
