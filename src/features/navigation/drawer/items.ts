@@ -18,6 +18,8 @@ const navMainItems: Array<NavItemsInterface> = [
   { Icon: DonutSmallIcon, label: 'products', link: '/products' },
   { Icon: ShoppingCartCheckoutIcon, label: 'orders', link: '/orders' },
   { Icon: StarHalfIcon, label: 'reviews', link: '/reviews' },
+  { Icon: StarHalfIcon, label: 'signup', link: '/signup' },
+  { Icon: StarHalfIcon, label: 'signin', link: '/signin' },
 ]
 const menuId: string = 'primary-search-account-menu'
 const mobileMenuId: string = 'primary-search-account-menu-mobile'
