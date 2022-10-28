@@ -11,8 +11,8 @@ const SignUpIn: React.FunctionComponent<ISignUpInProps> = ({ children }) => {
   return (
     <React.Fragment>
       <CssBaseline />
-      <Container maxWidth="sm">
-        <Box sx={{ height: '80vh', marginTop: '10rem', border: '1px solid #000' }}>{children}</Box>
+      <Container>
+        <Box>{children}</Box>
       </Container>
     </React.Fragment>
   )

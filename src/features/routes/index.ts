@@ -21,7 +21,7 @@ const publicRoutes: Array<routes> = [
   { path: '/vendors', component: Vendors },
   { path: '/signup', component: Signup, layout: SignUpIn },
   { path: '/signin', component: Signin, layout: SignUpIn },
-  { path: '/*', component: NotFound },
+  { path: '/*', component: NotFound, layout: null },
 ]
 
 const privateRoutes: Array<routes> = []
