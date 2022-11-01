@@ -12,6 +12,12 @@ import { SignUpIn } from '@features/layout'
 import { routes } from './type'
 
 const publicRoutes: Array<routes> = [
+  { path: '/signup', component: Signup, layout: SignUpIn },
+  { path: '/signin', component: Signin, layout: SignUpIn },
+  { path: '/*', component: NotFound, layout: null },
+]
+
+const privateRoutes: Array<routes> = [
   { path: '/categories', component: Categories },
   { path: '/', component: Dashboard },
   { path: '/orders', component: Orders },
@@ -19,11 +25,6 @@ const publicRoutes: Array<routes> = [
   { path: '/reviews', component: Reviews },
   { path: '/users', component: Users },
   { path: '/vendors', component: Vendors },
-  { path: '/signup', component: Signup, layout: SignUpIn },
-  { path: '/signin', component: Signin, layout: SignUpIn },
-  { path: '/*', component: NotFound, layout: null },
 ]
-
-const privateRoutes: Array<routes> = []
 
 export { publicRoutes, privateRoutes }
