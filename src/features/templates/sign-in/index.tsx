@@ -47,10 +47,10 @@ export default function SignIn() {
     try {
       const payload = await signin({ email, password }).unwrap()
       console.log('🚀 ~ file: index.tsx ~ line 48 ~ constonSubmit:SubmitHandler<IFormInput>= ~ payload', payload)
-      setItem('user', payload.data)
-      showToast('success', 'Sign in Success')
+      setItem('user', JSON.stringify(payload.data))
+      return showToast('success', 'Sign in Success')
     } catch (error: any) {
-      showToast('error', error.data.data.message)
+      return showToast('error', error.data.data.message)
     }
   }
 

@@ -1,11 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
+interface IAuth {
+  accessToken: string
+  refreshToken: string
+}
 interface SignUpState {
   firstName: string
   lastName: string
   email: string
   password: string
+  auth?: IAuth
 }
 
 const initialState = {
@@ -30,6 +35,9 @@ const authSlice = createSlice({
     },
     setPassword(state, action: PayloadAction<string>) {
       state.password = action.payload
+    },
+    setAuth(state, action: PayloadAction<IAuth>) {
+      state.auth = action.payload
     },
   },
 })

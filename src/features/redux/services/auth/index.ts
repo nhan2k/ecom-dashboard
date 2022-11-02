@@ -1,12 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
-import { apiPublicURL, apiPrivateURL } from '@features/redux/services'
-
-interface IDataAuth {
-  firstName: string
-  lastName: string
-  email: string
-  password: string
-}
+import { apiPublicURL } from '@features/redux/services'
+import { IDataAuth, IDataSignin } from './type'
 
 export const AuthApi = createApi({
   reducerPath: 'AuthApi',
@@ -22,8 +16,24 @@ export const AuthApi = createApi({
       invalidatesTags: ['Auth'],
     }),
     postSignin: builder.mutation({
-      query: (data: { email: string; password: string }) => ({
+      query: (data: IDataSignin) => ({
         url: '/api/v1',
+        body: data,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+    postGetLinkReset: builder.mutation({
+      query: (data: IDataSignin) => ({
+        url: '/api/v1/auth/reset-password',
+        body: data,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Auth'],
+    }),
+    postLogout: builder.mutation({
+      query: (data: IDataSignin) => ({
+        url: '/api/v1/auth/logout',
         body: data,
         method: 'POST',
       }),
@@ -32,4 +42,4 @@ export const AuthApi = createApi({
   }),
 })
 
-export const { usePostSignupMutation, usePostSigninMutation } = AuthApi
+export const { usePostSignupMutation, usePostSigninMutation, usePostGetLinkResetMutation, usePostLogoutMutation } = AuthApi
