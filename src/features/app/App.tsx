@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { publicRoutes, privateRoutes } from '@features/routes'
+import { publicRoutes, adminRoutes, vendorRoutes } from '@features/routes'
 import { DefaultLayout } from '@features/layout'
+import NotFound from '@pages/not-found'
 
 interface AppInterface {}
 
@@ -32,7 +33,7 @@ const App: React.FunctionComponent<AppInterface> = () => {
             />
           )
         })}
-        {privateRoutes.map(({ component, path, layout }, index: number) => {
+        {adminRoutes.map(({ component, path, layout }, index: number) => {
           const Page = component
 
           let Layout = DefaultLayout
@@ -55,6 +56,30 @@ const App: React.FunctionComponent<AppInterface> = () => {
             />
           )
         })}
+        {vendorRoutes.map(({ component, path, layout }, index: number) => {
+          const Page = component
+
+          let Layout = DefaultLayout
+
+          if (layout) {
+            Layout = layout
+          } else if (layout === null) {
+            Layout = React.Fragment
+          }
+
+          return (
+            <Route
+              key={index}
+              path={path}
+              element={
+                <Layout>
+                  <Page />
+                </Layout>
+              }
+            />
+          )
+        })}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   )

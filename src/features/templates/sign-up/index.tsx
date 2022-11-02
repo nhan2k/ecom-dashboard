@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography'
 import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useForm, SubmitHandler } from 'react-hook-form'
-import { usePostSignupMutation } from '@features/redux/services/auth'
 import { useAppSelector, useAppDispatch } from '@features/hooks/reduxHooks'
 import { setFirstName, setLastName, setEmail, setPassword } from '@features/redux/slices/auth'
 import { ToastContainer } from 'react-toastify'
@@ -29,7 +28,6 @@ interface IFormInput {
 }
 
 export default function SignUp() {
-  const [signup] = usePostSignupMutation()
   const { email, firstName, lastName, password } = useAppSelector((state) => state.authSlice)
   const dispatch = useAppDispatch()
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,11 +49,7 @@ export default function SignUp() {
   } = useForm<IFormInput>()
   const onSubmit: SubmitHandler<IFormInput> = async () => {
     try {
-      const payload = await signup({ firstName, lastName, email, password }).unwrap()
-      showToast('success', payload.data.message)
-    } catch (error: any) {
-      showToast('error', error.data.data.message)
-    }
+    } catch (error: any) {}
   }
 
   return (

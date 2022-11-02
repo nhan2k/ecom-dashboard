@@ -14,11 +14,10 @@ import Container from '@mui/material/Container'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from '@features/hooks/reduxHooks'
-import { setEmail, setPassword } from '@features/redux/slices/auth'
-import { usePostSigninMutation } from '@features/redux/services/auth'
+import { getAuthState, resetAuthState, setEmail, setPassword, signinAsyncThunk } from '@features/redux/slices/auth'
 import { showToast } from '@features/toastify'
 import { ToastContainer } from 'react-toastify'
-import { setItem } from '@features/utils/local.storage'
+import { useDispatch } from 'react-redux'
 
 const theme = createTheme()
 
@@ -34,9 +33,8 @@ export default function SignIn() {
     formState: { errors },
   } = useForm<IFormInput>()
   const dispatch = useAppDispatch()
-  const [signin] = usePostSigninMutation()
-
-  const { email, password } = useAppSelector((state) => state.authSlice)
+  const dispatchThunk = useDispatch<any>()
+  const { email, password } = useAppSelector(getAuthState)
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setEmail(e.target.value))
   }
@@ -45,13 +43,8 @@ export default function SignIn() {
   }
   const onSubmit: SubmitHandler<IFormInput> = async () => {
     try {
-      const payload = await signin({ email, password }).unwrap()
-      console.log('🚀 ~ file: index.tsx ~ line 48 ~ constonSubmit:SubmitHandler<IFormInput>= ~ payload', payload)
-      setItem('user', JSON.stringify(payload.data))
-      return showToast('success', 'Sign in Success')
-    } catch (error: any) {
-      return showToast('error', error.data.data.message)
-    }
+      await dispatch(signinAsyncThunk({ email, password }))
+    } catch (error: any) {}
   }
 
   return (

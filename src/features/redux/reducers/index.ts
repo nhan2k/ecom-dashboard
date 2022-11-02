@@ -1,10 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit'
-import { AuthApi } from '@features/redux/services/auth'
-import signupSlice from '@features/redux/slices/auth'
+import authSlice from '@features/redux/slices/auth'
 
 const rootReducer = combineReducers({
-  [AuthApi.reducerPath]: AuthApi.reducer,
-  [signupSlice.name]: signupSlice.reducer,
+  [authSlice.name]: authSlice.reducer,
 })
-
 export default rootReducer

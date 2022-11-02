@@ -14,17 +14,16 @@ import { routes } from './type'
 const publicRoutes: Array<routes> = [
   { path: '/signup', component: Signup, layout: SignUpIn },
   { path: '/signin', component: Signin, layout: SignUpIn },
-  { path: '/*', component: NotFound, layout: null },
 ]
 
-const privateRoutes: Array<routes> = [
+const adminRoutes: Array<routes> = [{ path: '/users', component: Users }]
+const vendorRoutes: Array<routes> = [
   { path: '/categories', component: Categories },
   { path: '/', component: Dashboard },
   { path: '/orders', component: Orders },
   { path: '/products', component: Products },
   { path: '/reviews', component: Reviews },
-  { path: '/users', component: Users },
   { path: '/vendors', component: Vendors },
 ]
 
-export { publicRoutes, privateRoutes }
+export { publicRoutes, adminRoutes, vendorRoutes }
