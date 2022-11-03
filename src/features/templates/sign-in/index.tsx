@@ -1,29 +1,29 @@
-import * as React from 'react'
-import Avatar from '@mui/material/Avatar'
-import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
-import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
-import Link from '@mui/material/Link'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import { createTheme, ThemeProvider } from '@mui/material/styles'
-import { useForm, SubmitHandler } from 'react-hook-form'
-import { useAppDispatch, useAppSelector } from '@features/hooks/reduxHooks'
-import { getAuthState, resetAuthState, setEmail, setPassword, signinAsyncThunk } from '@features/redux/slices/auth'
-import { showToast } from '@features/toastify'
-import { ToastContainer } from 'react-toastify'
-import { useDispatch } from 'react-redux'
+import * as React from 'react';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useAppDispatch, useAppSelector } from '@features/hooks/reduxHooks';
+import { getAuthState, resetAuthState, setEmail, setPassword, signinAsyncThunk, setLoading } from '@features/redux/slices/auth';
+import { showToast } from '@features/toastify';
+import { ToastContainer } from 'react-toastify';
+import { Alert } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 
-const theme = createTheme()
+const theme = createTheme();
 
 interface IFormInput {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export default function SignIn() {
@@ -31,20 +31,30 @@ export default function SignIn() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<IFormInput>()
-  const dispatch = useAppDispatch()
-  const dispatchThunk = useDispatch<any>()
-  const { email, password } = useAppSelector(getAuthState)
+  } = useForm<IFormInput>();
+  const { auth } = useAppSelector(getAuthState);
+  const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (auth) {
+      return navigate('/');
+    }
+  }, [auth]);
+
+  const dispatch = useAppDispatch();
+  const { email, password, loading } = useAppSelector(getAuthState);
   const onEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setEmail(e.target.value))
-  }
+    dispatch(setEmail(e.target.value));
+  };
   const onPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setPassword(e.target.value))
-  }
+    dispatch(setPassword(e.target.value));
+  };
+
   const onSubmit: SubmitHandler<IFormInput> = async () => {
-    try {
-      await dispatch(signinAsyncThunk({ email, password }))
-    } catch (error: any) {}
+    await dispatch(signinAsyncThunk({ email, password }));
+  };
+  if (loading === 'succeeded') {
+    navigate('/');
   }
 
   return (
@@ -119,19 +129,25 @@ export default function SignIn() {
                 </Grid>
               </Grid>
 
+              {loading === 'failed' ? <Alert severity="error">Signin fail, please check again!</Alert> : loading === 'succeeded' ? <Alert severity="success">Signin success</Alert> : <></>}
               <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
+
               <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
                 Sign In
               </Button>
               <Grid container>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
+                  <Link to={'/reset'}>
+                    <Typography variant={'body1'} color={'blue'}>
+                      Forgot password?
+                    </Typography>
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
+                  <Link to={'/signup'}>
+                    <Typography variant={'body1'} color={'blue'}>
+                      Don't have an account? Sign Up
+                    </Typography>
                   </Link>
                 </Grid>
               </Grid>
@@ -139,18 +155,7 @@ export default function SignIn() {
           </Box>
         </Container>
       </ThemeProvider>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover={false}
-        theme="light"
-      />
+      <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover={false} theme="light" />
     </>
-  )
+  );
 }

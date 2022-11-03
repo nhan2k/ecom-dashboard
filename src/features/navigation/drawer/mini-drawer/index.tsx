@@ -1,56 +1,56 @@
-import * as React from 'react'
-import { useTheme } from '@mui/material/styles'
-import { ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, List, CssBaseline, Typography, Divider, IconButton, Box, Badge } from '@mui/material'
-import {
-  Mail as MailIcon,
-  Notifications as NotificationsIcon,
-  MoreVert as MoreIcon,
-  Search as SearchIcon,
-  ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-  Menu as MenuIcon,
-} from '@mui/icons-material'
-import { Menu, Avatar, Tooltip, MenuItem } from '@mui/material'
-import { Link } from 'react-router-dom'
+import * as React from 'react';
+import { useTheme } from '@mui/material/styles';
+import { ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, List, CssBaseline, Typography, Divider, IconButton, Box, Badge } from '@mui/material';
+import { Mail as MailIcon, Notifications as NotificationsIcon, MoreVert as MoreIcon, Search as SearchIcon, ChevronLeft as ChevronLeftIcon, ChevronRight as ChevronRightIcon, Menu as MenuIcon } from '@mui/icons-material';
+import { Menu, Avatar, Tooltip, MenuItem } from '@mui/material';
+import { Link } from 'react-router-dom';
 
-import DrawerHeader from './DrawerHeader'
-import SearchIconWrapper from './SearchIconWrapper'
-import StyledInputBase from './StyledInputBase'
-import { navMainItems, mobileMenuId, mails, notifications } from './items'
-import Drawer from './Drawer'
-import AppBar from './AppBar'
-import Search from './Search'
-import { MiniDrawerInterface } from './type'
-import BasicBreadcrumbs from '@features/navigation/breadcrumbs'
+import DrawerHeader from './DrawerHeader';
+import SearchIconWrapper from './SearchIconWrapper';
+import StyledInputBase from './StyledInputBase';
+import { navMainItems, mobileMenuId, mails, notifications } from './items';
+import Drawer from './Drawer';
+import AppBar from './AppBar';
+import Search from './Search';
+import { MiniDrawerInterface } from './type';
+import BasicBreadcrumbs from '@features/navigation/breadcrumbs';
+import { useAppSelector } from '@/features/hooks/reduxHooks';
+import { getAuthState } from '@/features/redux/slices/auth';
 
 const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) => {
-  const theme = useTheme()
-  const [open, setOpen] = React.useState(true)
+  const theme = useTheme();
+  const [open, setOpen] = React.useState(true);
+  const { auth } = useAppSelector(getAuthState);
 
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null)
+  const [navs, setNavs] = React.useState(navMainItems);
+  // if (!auth) {
+  //   setNavs([]);
+  // }
+
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleDrawerOpen = () => {
-    console.log(mobileMoreAnchorEl)
-    setOpen(true)
-  }
+    console.log(mobileMoreAnchorEl);
+    setOpen(true);
+  };
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget)
-  }
+    setMobileMoreAnchorEl(event.currentTarget);
+  };
   const handleDrawerClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   // const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null)
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElUser(event.currentTarget)
-  }
+    setAnchorElUser(event.currentTarget);
+  };
 
   const handleCloseUserMenu = () => {
-    setAnchorElUser(null)
-  }
+    setAnchorElUser(null);
+  };
 
-  const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
+  const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
   return (
     <Box sx={{ display: 'flex' }}>
@@ -129,7 +129,7 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}</IconButton>
         </DrawerHeader>
-        {navMainItems.map(({ Icon, label, divider, link }, index) => (
+        {navs.map(({ Icon, label, divider, link }, index) => (
           <React.Fragment key={index}>
             {divider && <Divider />}
             <List>
@@ -167,7 +167,7 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
         {children}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default MiniDrawer
+export default MiniDrawer;

@@ -2,7 +2,7 @@ import { privateHTTP, publicHTTP } from '@features/utils/axios'
 import { IDataAuth, IDataSignin, IAuth } from './type'
 import { IDataResponse } from '@features/utils/axios'
 
-const signin = async (data: IDataSignin): Promise<IDataResponse> => {
+const signin = async (data: IDataSignin): Promise<any> => {
   try {
     const response = await publicHTTP.post('/api/v1', data)
     return response.data

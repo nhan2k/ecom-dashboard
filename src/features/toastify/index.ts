@@ -1,6 +1,7 @@
 import { toast, ToastOptions } from 'react-toastify'
 
-const showToast = (type: string, message: string) => {
+type TType = 'info' | 'success' | 'warning' | 'error' | 'default'
+const showToast = (type: TType, message: string) => {
   const options: ToastOptions<{}> = {
     position: 'top-right',
     autoClose: 5000,

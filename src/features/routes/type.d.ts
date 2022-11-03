@@ -1,7 +1,9 @@
-interface routes {
-  path: string
-  component: FC<any>
-  layout?: FC<any>
+interface IRoutes {
+  path: string;
+  component: FC<any>;
+  layout?: FC<any>;
+  isPublic: boolean;
+  role?: Array<number>;
 }
 
-export { routes }
+export { IRoutes };

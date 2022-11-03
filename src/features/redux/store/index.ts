@@ -5,7 +5,7 @@ import rootReducer from '../reducers'
 
 const store: EnhancedStore<any> = configureStore({
   reducer: rootReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend().concat(logger),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend().concat(),
 })
 // setupListeners(store.dispatch)
 export type RootState = ReturnType<typeof store.getState>
