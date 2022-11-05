@@ -1,10 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { IAuthState, IAuth, IDataAuth, IDataSignin, TLoading } from './type';
+import { IAuthState, TLoading } from './type';
 import { signin } from './auth.service';
 import { setItem, getItem } from '@features/utils/local.storage';
 import { RootState } from '../../store';
-import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 const prefixType = 'auth';
 const signinAsyncThunk = createAsyncThunk(`${prefixType}/signin`, async (data: { email: string; password: string }, thunkAPI) => {
@@ -22,7 +21,7 @@ const initialState: IAuthState = {
   password: '',
   loading: 'idle',
   auth: getItem('user') ? true : false,
-  decoded: undefined,
+  role: getItem('user') && getItem('user')?.includes('VENDOR') ? 'VENDOR' : 'ADMIN',
 };
 
 const authSlice = createSlice({
@@ -74,7 +73,14 @@ const authSlice = createSlice({
     resetAuthState: (state) => {
       return {
         ...state,
-        initialState,
+        email: '',
+        firstName: '',
+        lastName: '',
+        password: '',
+        loading: 'idle',
+        token: '',
+        auth: false,
+        role: undefined,
       };
     },
   },
@@ -86,27 +92,21 @@ const authSlice = createSlice({
       };
     });
     builder.addCase(signinAsyncThunk.fulfilled, (state, action) => {
-      if (!action.payload.isSuccess) {
+      if (!action.payload.isSuccess || action.payload.data.role === 'USER') {
         return {
           ...state,
           loading: 'failed',
         };
       }
       const token: string = action.payload.data.accessToken;
-      const decoded: any = jwt_decode(token);
-      console.log('🚀 ~ file: index.ts ~ line 97 ~ builder.addCase ~ decoded', decoded);
-      if (decoded) {
-        delete decoded.aud;
-        delete decoded.iss;
-      }
+
       setItem('user', JSON.stringify(action.payload.data));
-      setItem('role', JSON.stringify(decoded));
       return {
         ...state,
         loading: 'succeeded',
         auth: true,
         token: token,
-        decoded: decoded,
+        role: action.payload.data.role,
       };
     });
     builder.addCase(signinAsyncThunk.rejected, (state, action) => {
