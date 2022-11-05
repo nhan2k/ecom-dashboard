@@ -15,6 +15,7 @@ interface IAuth {
   refreshToken: string;
 }
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
+type TRole = 'VENDOR' | 'ADMIN';
 interface IAuthState {
   firstName: string;
   lastName: string;
@@ -23,7 +24,7 @@ interface IAuthState {
   auth: boolean;
   loading: TLoading;
   token?: string;
-  decoded?: any;
+  role?: TRole;
 }
 
 export { IDataAuth, IDataSignin, IAuth, TLoading, IAuthState };

@@ -1,24 +1,18 @@
 import * as React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { publicRoutes } from '@features/routes';
 import { DefaultLayout } from '@features/layout';
 import NotFound from '@pages/not-found';
 import ProtectedRoute from '@features/routes/AuthRoutes';
-import { rolesMap } from '@features/redux/slices/auth/enum';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import { getAuthState, setDecoded } from '../redux/slices/auth';
 
 interface AppInterface {}
 
 const App: React.FunctionComponent<AppInterface> = () => {
-  const { decoded } = useAppSelector(getAuthState);
-
   return (
     <Router>
       <Routes>
-        {publicRoutes.map(({ component, path, layout, role, isPublic }, index: number) => {
+        {publicRoutes.map(({ component, path, layout, roleRoutes, isPublic }, index: number) => {
           let Page = component;
-
           let Layout = DefaultLayout;
 
           if (layout) {
@@ -41,13 +35,14 @@ const App: React.FunctionComponent<AppInterface> = () => {
             );
           }
 
+          let newRoleRoutes = roleRoutes || ['VENDOR'];
           return (
             <Route
               key={index}
-              path={role ? (role === decoded.admin ? path : role === decoded.vendor ? path : '/') : '/404'}
+              path={path}
               element={
                 <Layout>
-                  <ProtectedRoute>
+                  <ProtectedRoute roleRoutes={newRoleRoutes}>
                     <Page />
                   </ProtectedRoute>
                 </Layout>
