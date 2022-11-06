@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { IAuthState, TLoading } from './type';
-import { signin } from './auth.service';
+import { signin, signout } from './auth.service';
 import { setItem, getItem } from '@features/utils/local.storage';
 import { RootState } from '../../store';
 
@@ -14,14 +14,24 @@ const signinAsyncThunk = createAsyncThunk(`${prefixType}/signin`, async (data: {
     return thunkAPI.rejectWithValue(error);
   }
 });
+
+const signoutAsyncThunk = createAsyncThunk(`${prefixType}/signout`, async (_, thunkAPI) => {
+  try {
+    const dataResponse = await signout();
+    return dataResponse;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
 const initialState: IAuthState = {
   firstName: '',
   lastName: '',
   email: '',
   password: '',
   loading: 'idle',
-  auth: getItem('user') ? true : false,
-  role: getItem('user') && getItem('user')?.includes('VENDOR') ? 'VENDOR' : 'ADMIN',
+  auth: getItem('user') !== null ? true : false,
+  role: getItem('user') !== null ? getItem('user').role : 'VENDOR',
 };
 
 const authSlice = createSlice({
@@ -100,7 +110,7 @@ const authSlice = createSlice({
       }
       const token: string = action.payload.data.accessToken;
 
-      setItem('user', JSON.stringify(action.payload.data));
+      setItem('user', action.payload.data);
       return {
         ...state,
         loading: 'succeeded',
@@ -118,7 +128,7 @@ const authSlice = createSlice({
   },
 });
 
-export { signinAsyncThunk };
+export { signinAsyncThunk, signoutAsyncThunk };
 export const getAuthState = (state: RootState) => state.authSlice;
 export const { setFirstName, setLastName, setEmail, setPassword, resetAuthState, setLoading, setDecoded } = authSlice.actions;
 export default authSlice;

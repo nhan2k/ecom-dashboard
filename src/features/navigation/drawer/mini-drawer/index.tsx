@@ -15,7 +15,7 @@ import Search from './Search';
 import { MiniDrawerInterface } from './type';
 import BasicBreadcrumbs from '@features/navigation/breadcrumbs';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
-import { getAuthState } from '@/features/redux/slices/auth';
+import { getAuthState, signoutAsyncThunk } from '@/features/redux/slices/auth';
 
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
@@ -54,9 +54,10 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
   const handleSingout = (event: React.SyntheticEvent) => {
     event.preventDefault();
     // call api logout
-
+    dispatch(signoutAsyncThunk());
     dispatch(resetAuthState());
     removeItem('user');
+
     navigate('/signin');
   };
 
