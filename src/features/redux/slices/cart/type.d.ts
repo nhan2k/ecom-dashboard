@@ -23,6 +23,7 @@ interface IDataCart {
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 interface ICartState {
+  dataInput: IDataCart;
   dataGetAll: IDataCart[];
   dataGetOne: IDataCart;
   getAllLoading: TLoading;
@@ -30,6 +31,11 @@ interface ICartState {
   postLoading: TLoading;
   putLoading: TLoading;
   deleteLoading: TLoading;
+  getAllError: string;
+  getOneError: string;
+  postError: string;
+  putError: string;
+  deleteError: string;
 }
 
 export { IDataCart, IDataSignin, IAuth, TLoading, ICartState };
