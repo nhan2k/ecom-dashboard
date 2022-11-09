@@ -229,7 +229,7 @@ const cartSlice = createSlice({
         ...state,
         deleteLoading: 'succeeded',
         dataGetAll: state.dataGetAll.filter((element: IDataCart) => {
-          return element.id != id;
+          return Number(element.id) !== Number(id);
         }),
       };
     });

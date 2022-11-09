@@ -73,7 +73,7 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <Container style={{ display: 'flex', justifyContent: 'center', fontSize: '1.6rem' }}>
+                  <Container style={{ display: 'flex', justifyContent: 'center' }}>
                     {postLoading === 'pending' ? (
                       <Box sx={{ display: 'flex' }}>
                         <CircularProgress />

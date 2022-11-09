@@ -217,9 +217,7 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
           <DrawerHeader />
-          <DrawerHeader sx={{ justifyContent: 'space-between' }}>
-            <BasicBreadcrumbs />
-          </DrawerHeader>
+
           {children}
         </Box>
       </Box>
