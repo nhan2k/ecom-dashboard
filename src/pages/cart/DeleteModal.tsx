@@ -4,8 +4,10 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import { IconButton, Stack } from '@mui/material';
+import { CircularProgress, IconButton, Stack } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
+import { deleteCartAsyncThunk, getCartState } from '@/features/redux/slices/cart';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -24,15 +26,21 @@ interface IDeleteModal {
 }
 
 const DeleteModal: React.FC<IDeleteModal> = ({ id }) => {
+  const dispatch = useAppDispatch();
+  const { postLoading } = useAppSelector(getCartState);
   const [openModalDelete, setOpenModalDelete] = React.useState(false);
   const handleOpenModalDelete = () => {
-    console.log('🚀 ~ file: DeleteModal.tsx ~ line 27 ~ id', id);
-
     setOpenModalDelete(true);
   };
   const handleCloseModalDelete = () => setOpenModalDelete(false);
 
-  const handleDelete = (e: React.BaseSyntheticEvent) => {};
+  const handleDelete = (e: React.BaseSyntheticEvent) => {
+    e.preventDefault();
+    dispatch(deleteCartAsyncThunk(id));
+    if (postLoading === 'succeeded') {
+      handleCloseModalDelete();
+    }
+  };
 
   return (
     <div>
@@ -48,9 +56,15 @@ const DeleteModal: React.FC<IDeleteModal> = ({ id }) => {
             <Button fullWidth color="info" variant="outlined" startIcon={<CancelIcon />} onClick={() => handleCloseModalDelete()}>
               Cancel
             </Button>
-            <Button fullWidth color="error" variant="outlined" startIcon={<DeleteForeverIcon />} onClick={handleDelete}>
-              Delete
-            </Button>
+            {postLoading === 'pending' ? (
+              <Box sx={{ display: 'flex' }}>
+                <CircularProgress />
+              </Box>
+            ) : (
+              <Button fullWidth color="error" variant="outlined" startIcon={<DeleteForeverIcon />} onClick={handleDelete}>
+                Delete
+              </Button>
+            )}
           </Stack>
         </Box>
       </Modal>

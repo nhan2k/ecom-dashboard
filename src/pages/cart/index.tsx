@@ -16,13 +16,12 @@ import CreateModal from './CreateModal';
 import UpdateModal from './UpdateModal';
 import DeleteModal from './DeleteModal';
 import { Typography } from '@mui/material';
-import { v4 as uuidv4 } from 'uuid';
 
 interface ICart {}
 
 const Cart: React.FunctionComponent<ICart> = () => {
   const dispatch = useAppDispatch();
-  const { dataInput, dataGetAll, dataGetOne, getAllLoading, getOneLoading, postLoading, putLoading, deleteLoading, getAllError, getOneError, postError, putError, deleteError } = useAppSelector(getCartState);
+  const { dataGetAll, getAllLoading } = useAppSelector(getCartState);
 
   React.useEffect(() => {
     let flag = true;
@@ -49,7 +48,7 @@ const Cart: React.FunctionComponent<ICart> = () => {
 
   let columns: any[] = [];
   if (getAllLoading === 'succeeded') {
-    columns = [...Object.keys(dataGetAll[0])];
+    columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
   }
 
   return (
@@ -69,52 +68,68 @@ const Cart: React.FunctionComponent<ICart> = () => {
           <TableHead>
             <TableRow>
               {getAllLoading === 'succeeded' ? (
-                columns.map((column: any, index: number) => {
-                  return (
-                    <TableCell key={index} sx={{ display: column === 'id' ? 'none' : '' }}>
-                      <Typography fontSize={'1.6rem'} textAlign={'center'}>
-                        {column}
-                      </Typography>
-                    </TableCell>
-                  );
-                })
+                dataGetAll.length > 0 ? (
+                  columns.map((column: any, index: number) => {
+                    return (
+                      <TableCell key={index} sx={{ display: column === 'id' ? 'none' : '' }}>
+                        <Typography fontSize={'1.6rem'} textAlign={'center'}>
+                          {column}
+                        </Typography>
+                      </TableCell>
+                    );
+                  })
+                ) : (
+                  <React.Fragment />
+                )
               ) : (
                 <React.Fragment />
               )}
-              <TableCell>
-                <Typography fontSize={'1.6rem'} textAlign={'center'}>
-                  Action
-                </Typography>
-              </TableCell>
+              {dataGetAll.length > 0 ? (
+                <TableCell>
+                  <Typography fontSize={'1.6rem'} textAlign={'center'}>
+                    Action
+                  </Typography>
+                </TableCell>
+              ) : (
+                <TableCell>
+                  <Typography align="center" variant="h3">
+                    Empty Data
+                  </Typography>
+                </TableCell>
+              )}
             </TableRow>
           </TableHead>
 
           <TableBody>
             {getAllLoading === 'succeeded' ? (
-              dataGetAll.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any, index: number) => {
-                return (
-                  <TableRow hover role="checkbox" tabIndex={-1} key={index}>
-                    {getAllLoading === 'succeeded' ? (
-                      columns.map((column: any, indexCol: number) => {
-                        const value = row[column];
-                        return (
-                          <React.Fragment key={indexCol}>
-                            <TableCell sx={{ display: column === 'id' ? 'none' : '' }}>
-                              <Typography fontSize={'1.3rem'}>{value}</Typography>
-                            </TableCell>
-                          </React.Fragment>
-                        );
-                      })
-                    ) : (
-                      <React.Fragment />
-                    )}
-                    <TableCell style={{ display: 'flex' }}>
-                      <UpdateModal id={row.id} />
-                      <DeleteModal id={row.id} />
-                    </TableCell>
-                  </TableRow>
-                );
-              })
+              dataGetAll.length > 0 ? (
+                dataGetAll.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any, index: number) => {
+                  return (
+                    <TableRow hover role="checkbox" tabIndex={-1} key={index}>
+                      {getAllLoading === 'succeeded' ? (
+                        columns.map((column: any, indexCol: number) => {
+                          const value = row[column];
+                          return (
+                            <React.Fragment key={indexCol}>
+                              <TableCell sx={{ display: column === 'id' ? 'none' : '' }}>
+                                <Typography fontSize={'1.3rem'}>{value}</Typography>
+                              </TableCell>
+                            </React.Fragment>
+                          );
+                        })
+                      ) : (
+                        <React.Fragment />
+                      )}
+                      <TableCell style={{ display: 'flex' }}>
+                        <UpdateModal id={row.id} />
+                        <DeleteModal id={row.id} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              ) : (
+                <React.Fragment />
+              )
             ) : (
               <React.Fragment />
             )}

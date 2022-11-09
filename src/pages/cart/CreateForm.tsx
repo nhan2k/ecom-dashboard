@@ -29,8 +29,8 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
   const { dataInput, postLoading } = useAppSelector(getCartState);
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    dispatch(createCartAsyncThunk(data));
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    await dispatch(createCartAsyncThunk(data));
     if (postLoading === 'succeeded') {
       handleCloseModalCreate();
     }
@@ -74,7 +74,7 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <Container style={{ display: 'flex', justifyContent: 'center', fontSize: '1.6rem' }}>
-                    {postLoading === 'loading' ? (
+                    {postLoading === 'pending' ? (
                       <Box sx={{ display: 'flex' }}>
                         <CircularProgress />
                       </Box>

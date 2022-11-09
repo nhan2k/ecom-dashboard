@@ -40,6 +40,7 @@ const putCartAsyncThunk = createAsyncThunk(`${prefixType}/put`, async ({ data, i
 const deleteCartAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async (id: number, thunkAPI) => {
   try {
     const dataResponse = await deleteCart(id);
+    console.log('🚀 ~ file: index.ts ~ line 43 ~ deleteCartAsyncThunk ~ dataResponse', dataResponse);
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error);
@@ -229,7 +230,7 @@ const cartSlice = createSlice({
         ...state,
         deleteLoading: 'succeeded',
         dataGetAll: state.dataGetAll.filter((element: IDataCart) => {
-          return element.id !== id;
+          return element.id != id;
         }),
       };
     });
