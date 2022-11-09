@@ -15,10 +15,8 @@ const signin = async (data: IDataSignin): Promise<IDataResponse> => {
 const signout = async (): Promise<IDataResponse> => {
   try {
     const response = await privateHTTP.get('/auth/logout');
-    console.log('🚀 ~ file: auth.service.ts ~ line 8 ~ signin ~ response', response);
     return response.data;
   } catch (error: any) {
-    console.log('🚀 ~ file: auth.service.ts ~ line 21 ~ signout ~ error', error);
     return error.response.data;
   }
 };
