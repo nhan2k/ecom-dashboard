@@ -23,7 +23,6 @@ const getOneCartAsyncThunk = createAsyncThunk(`${prefixType}/getOne`, async (id:
 const createCartAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (data: IDataCart, thunkAPI) => {
   try {
     const dataResponse = await createCart(data);
-    console.log('🚀 ~ file: index.ts ~ line 26 ~ createCartAsyncThunk ~ dataResponse', dataResponse);
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error);
