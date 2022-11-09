@@ -23,6 +23,7 @@ const getOneCartAsyncThunk = createAsyncThunk(`${prefixType}/getOne`, async (id:
 const createCartAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (data: IDataCart, thunkAPI) => {
   try {
     const dataResponse = await createCart(data);
+    console.log('🚀 ~ file: index.ts ~ line 26 ~ createCartAsyncThunk ~ dataResponse', dataResponse);
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error);
@@ -46,7 +47,10 @@ const deleteCartAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async (id:
 });
 
 const initialState: ICartState = {
-  dataInput: {},
+  dataInput: {
+    sessionId: '',
+    token: '',
+  },
   dataGetAll: [],
   dataGetOne: {},
   getAllLoading: 'idle',
@@ -67,6 +71,24 @@ const cartSlice = createSlice({
   reducers: {
     resetCartState: () => {
       return initialState;
+    },
+    setSessionId: (state, action) => {
+      return {
+        ...state,
+        dataInput: {
+          ...state.dataInput,
+          sessionId: action.payload,
+        },
+      };
+    },
+    setToken: (state, action) => {
+      return {
+        ...state,
+        dataInput: {
+          ...state.dataInput,
+          token: action.payload,
+        },
+      };
     },
   },
   extraReducers(builder) {
@@ -221,7 +243,7 @@ const cartSlice = createSlice({
   },
 });
 
-export { getAllCartAsyncThunk, getOneCartAsyncThunk, createAsyncThunk, putCartAsyncThunk, deleteCartAsyncThunk };
+export { getAllCartAsyncThunk, getOneCartAsyncThunk, createCartAsyncThunk, putCartAsyncThunk, deleteCartAsyncThunk };
 export const getCartState = (state: RootState) => state.cartSlice;
-export const { resetCartState } = cartSlice.actions;
+export const { resetCartState, setSessionId, setToken } = cartSlice.actions;
 export default cartSlice;

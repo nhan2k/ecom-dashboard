@@ -20,10 +20,15 @@ interface IDataCart {
   deletedAt?: string;
 }
 
+interface IDataInput {
+  sessionId: string;
+  token: string;
+}
+
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 interface ICartState {
-  dataInput: IDataCart;
+  dataInput: IDataInput;
   dataGetAll: IDataCart[];
   dataGetOne: IDataCart;
   getAllLoading: TLoading;
