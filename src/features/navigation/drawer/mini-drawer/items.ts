@@ -8,7 +8,7 @@ const navMainItems: Array<NavItemsInterface> = [
   { Icon: DevicesOtherIcon, label: 'product', divider: true, link: '/product', roleNav: ['VENDOR', 'ADMIN'] },
   { Icon: AbcIcon, label: 'product-category', link: '/product-category', roleNav: ['VENDOR', 'ADMIN'] },
   { Icon: TextFormatIcon, label: 'product-meta', link: '/product-meta', roleNav: ['VENDOR', 'ADMIN'] },
-  { Icon: StarHalfIcon, label: 'product-review', link: '/', roleNav: ['VENDOR', 'ADMIN'] },
+  { Icon: StarHalfIcon, label: 'product-review', link: '/product-review', roleNav: ['VENDOR', 'ADMIN'] },
   { Icon: BookIcon, label: 'product-tag', link: '/product-tag', roleNav: ['VENDOR', 'ADMIN'] },
   { Icon: TagIcon, label: 'tag', divider: true, link: '/tag', roleNav: ['VENDOR', 'ADMIN'] },
   { Icon: PaidIcon, label: 'transaction', divider: true, link: '/transaction', roleNav: ['VENDOR', 'ADMIN'] },

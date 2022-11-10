@@ -48,7 +48,7 @@ const Users: React.FunctionComponent<IUsers> = () => {
   if (getAllLoading === 'succeeded') {
     columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
   }
-  let hiddenCol: string[] = ['userId', 'summary', 'id', 'slug', 'shop', 'updatedAt', 'deletedAt', 'type', 'price', 'discount'];
+  let hiddenCol: string[] = ['passwordHash'];
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
