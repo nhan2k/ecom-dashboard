@@ -3,11 +3,11 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Button, Grid, TextField } from '@mui/material';
+import { Alert, Button, Grid, Stack, TextField } from '@mui/material';
 import { Box, CircularProgress } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
-import { getCartState, setSessionId, setToken, putCartAsyncThunk } from '@/features/redux/slices/cart';
+import { getOrderState, putOrderAsyncThunk, setSessionId, setToken } from '@/features/redux/slices/order';
 
 const theme = createTheme();
 type Inputs = {
@@ -25,11 +25,11 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const { dataInput, putLoading } = useAppSelector(getCartState);
+  const { dataInput, putLoading, putError } = useAppSelector(getOrderState);
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await dispatch(putCartAsyncThunk({ data, id }));
+    await dispatch(putOrderAsyncThunk({ data, id }));
     if (putLoading === 'succeeded') {
       handleCloseModalUpdate();
     }
@@ -39,7 +39,7 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
       <Container component="main" maxWidth="xl" sx={{ mb: 4 }}>
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
           <Typography component="h1" variant="h3" align="center" style={{ marginBottom: '30px' }}>
-            Update Cart
+            Update Order
           </Typography>
           <React.Fragment>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
@@ -49,8 +49,8 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
                     {...register('sessionId', { required: 'Required' })}
                     error={errors.sessionId ? true : false}
                     id="outlined-error-helper-text"
-                    label="Session Id"
-                    placeholder="Enter Session Id"
+                    label="sessionId"
+                    placeholder="Enter sessionId"
                     helperText={errors.sessionId ? String(errors.sessionId.message) : ''}
                     fullWidth
                     value={dataInput.sessionId}
@@ -62,16 +62,22 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
                     {...register('token', { required: 'Required' })}
                     error={errors.token ? true : false}
                     id="outlined-error-helper-text"
-                    label="Token"
-                    placeholder="Enter Token"
+                    label="token"
+                    placeholder="Enter token"
                     helperText={errors.token ? String(errors.token.message) : ''}
                     fullWidth
                     value={dataInput.token}
                     onChange={(e: React.BaseSyntheticEvent) => dispatch(setToken(e.target.value))}
                   />
                 </Grid>
-
                 <Grid item xs={12}>
+                  {putLoading === 'failed' ? (
+                    <Stack sx={{ width: '100%' }} spacing={2}>
+                      <Alert severity="error">{putError}</Alert>
+                    </Stack>
+                  ) : (
+                    <React.Fragment />
+                  )}
                   <Container style={{ display: 'flex', justifyContent: 'center' }}>
                     {putLoading === 'pending' ? (
                       <Box sx={{ display: 'flex' }}>

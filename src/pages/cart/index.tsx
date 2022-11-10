@@ -50,6 +50,7 @@ const Cart: React.FunctionComponent<ICart> = () => {
   if (getAllLoading === 'succeeded') {
     columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
   }
+  let hiddenCol: string[] = ['userId', 'province', 'country', 'content', 'updatedAt'];
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -70,6 +71,9 @@ const Cart: React.FunctionComponent<ICart> = () => {
               {getAllLoading === 'succeeded' ? (
                 dataGetAll.length > 0 ? (
                   columns.map((column: any, index: number) => {
+                    if (hiddenCol.includes(column)) {
+                      return;
+                    }
                     return (
                       <TableCell key={index} sx={{ display: column === 'id' ? 'none' : '' }}>
                         <Typography fontSize={'1.6rem'} textAlign={'center'}>
@@ -108,6 +112,9 @@ const Cart: React.FunctionComponent<ICart> = () => {
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {getAllLoading === 'succeeded' ? (
                         columns.map((column: any, indexCol: number) => {
+                          if (hiddenCol.includes(column)) {
+                            return;
+                          }
                           const value = row[column];
                           return (
                             <React.Fragment key={indexCol}>

@@ -13,7 +13,6 @@ import Drawer from './Drawer';
 import AppBar from './AppBar';
 import Search from './Search';
 import { MiniDrawerInterface } from './type';
-import BasicBreadcrumbs from '@features/navigation/breadcrumbs';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
 import { getAuthState, signoutAsyncThunk } from '@/features/redux/slices/auth';
 
@@ -22,7 +21,6 @@ import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { removeItem } from '@/features/utils/local.storage';
 import { resetAuthState } from '@features/redux/slices/auth';
-import BasicModal from '@features/data-display/modal';
 
 const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) => {
   const theme = useTheme();

@@ -2,9 +2,6 @@ import Signup from '@pages/signup';
 import Signin from '@pages/signin';
 import { SignUpIn } from '@features/layout';
 import { IRoutes } from './type';
-
-import Cart from '@pages/cart';
-import CartItem from '@pages/cart-item';
 import Category from '@pages/category';
 import Dashboard from '@pages/dashboard';
 import Order from '@pages/order';
@@ -21,12 +18,9 @@ import User from '@pages/users';
 const publicRoutes: Array<IRoutes> = [
   { path: '/signup', component: Signup, layout: SignUpIn, isPublic: true },
   { path: '/signin', component: Signin, layout: SignUpIn, isPublic: true },
-  { path: '/cart', component: Cart, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
-  { path: '/cart-item', component: CartItem, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
   { path: '/category', component: Category, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
   { path: '/', component: Dashboard, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
   { path: '/order', component: Order, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
-  { path: '/order-item', component: OrderItem, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
   { path: '/product', component: Product, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
   { path: '/product-category', component: ProductCategory, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
   { path: '/product-meta', component: ProductMeta, isPublic: false, roleRoutes: ['VENDOR', 'ADMIN'] },
