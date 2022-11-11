@@ -16,6 +16,20 @@ const getAllProduct = async (): Promise<IDataResponse> => {
     return error.response.data;
   }
 };
+const countProduct = async (): Promise<IDataResponse> => {
+  try {
+    const user = getItem('user');
+    const token = user !== null ? user.accessToken : '';
+    const response = await privateHTTP.get('/product/count', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
 
 const getOneProduct = async (id: number): Promise<IDataResponse> => {
   try {
@@ -77,4 +91,4 @@ const deleteProduct = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-export { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct };
+export { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct };

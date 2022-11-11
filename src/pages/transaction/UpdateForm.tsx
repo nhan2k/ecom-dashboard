@@ -16,9 +16,8 @@ type Inputs = {
 };
 interface IUpdateForm {
   id: number;
-  handleCloseModalUpdate: any;
 }
-const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
+const UpdateForm: React.FC<IUpdateForm> = ({ id }) => {
   const {
     register,
     handleSubmit,
@@ -29,10 +28,7 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    await dispatch(putTransactionAsyncThunk({ data, id }));
-    if (putLoading === 'succeeded') {
-      handleCloseModalUpdate();
-    }
+    dispatch(putTransactionAsyncThunk({ data, id }));
   };
   return (
     <ThemeProvider theme={theme}>

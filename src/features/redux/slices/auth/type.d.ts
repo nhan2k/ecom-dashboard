@@ -1,6 +1,6 @@
-interface IDataAuth {
-  firstName: string;
-  lastName: string;
+interface IDataSignup {
+  firstName?: string;
+  lastName?: string;
   email: string;
   password: string;
 }
@@ -25,6 +25,8 @@ interface IAuthState {
   loading: TLoading;
   token?: string;
   role?: TRole;
+  loadingSignup: TLoading;
+  errorSignup: string;
 }
 
-export { IDataAuth, IDataSignin, IAuth, TLoading, IAuthState };
+export { IDataSignup, IDataSignin, IAuth, TLoading, IAuthState };

@@ -1,12 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IProductState, IDataProduct } from './type';
 import { RootState } from '@features/redux/store';
-import { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct } from './product.service';
+import { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct } from './product.service';
 
 const prefixType = 'product';
 const getAllProductAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
   try {
     const dataResponse = await getAllProduct();
+    return dataResponse;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+const countProductAsyncThunk = createAsyncThunk(`${prefixType}/count`, async (_, thunkAPI) => {
+  try {
+    const dataResponse = await countProduct();
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -50,13 +58,16 @@ const initialState: IProductState = {
     title: '',
   },
   dataGetAll: [],
+  count: 0,
   dataGetOne: {},
   getAllLoading: 'idle',
+  countLoading: 'idle',
   getOneLoading: 'idle',
   postLoading: 'idle',
   putLoading: 'idle',
   deleteLoading: 'idle',
   getAllError: '',
+  countError: '',
   getOneError: '',
   postError: '',
   putError: '',
@@ -107,6 +118,35 @@ const productSlice = createSlice({
         ...state,
         getAllLoading: 'failed',
         getAllError: action.payload.data.message,
+      };
+    });
+
+    builder.addCase(countProductAsyncThunk.pending, (state: IProductState) => {
+      return {
+        ...state,
+        countLoading: 'pending',
+      };
+    });
+    builder.addCase(countProductAsyncThunk.fulfilled, (state: IProductState, action: PayloadAction<IDataProduct | any>) => {
+      if (!action.payload.isSuccess) {
+        return {
+          ...state,
+          countLoading: 'failed',
+          countError: action.payload.data.message,
+        };
+      }
+
+      return {
+        ...state,
+        countLoading: 'succeeded',
+        count: action.payload.data,
+      };
+    });
+    builder.addCase(countProductAsyncThunk.rejected, (state: IProductState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        countLoading: 'failed',
+        countError: action.payload.data.message,
       };
     });
 
@@ -232,7 +272,7 @@ const productSlice = createSlice({
   },
 });
 
-export { getAllProductAsyncThunk, getOneProductAsyncThunk, createProductAsyncThunk, putProductAsyncThunk, deleteProductAsyncThunk };
+export { getAllProductAsyncThunk, getOneProductAsyncThunk, createProductAsyncThunk, putProductAsyncThunk, deleteProductAsyncThunk, countProductAsyncThunk };
 export const getProductState = (state: RootState) => state.productSlice;
 export const { resetProductState, setTitle } = productSlice.actions;
 export default productSlice;

@@ -61,6 +61,9 @@ const initialState: ICategoryState = {
   postError: '',
   putError: '',
   deleteError: '',
+  postModal: false,
+  putModal: false,
+  deleteModal: false,
 };
 
 const categorySlice = createSlice({
@@ -77,6 +80,24 @@ const categorySlice = createSlice({
           ...state.dataInput,
           title: action.payload,
         },
+      };
+    },
+    setPostModal: (state, action) => {
+      return {
+        ...state,
+        postModal: action.payload,
+      };
+    },
+    setPutModal: (state, action) => {
+      return {
+        ...state,
+        putModal: action.payload,
+      };
+    },
+    setDeleteModal: (state, action) => {
+      return {
+        ...state,
+        deleteModal: action.payload,
       };
     },
   },
@@ -234,5 +255,5 @@ const categorySlice = createSlice({
 
 export { getAllCategoryAsyncThunk, getOneCategoryAsyncThunk, createCategoryAsyncThunk, putCategoryAsyncThunk, deleteCategoryAsyncThunk };
 export const getCategoryState = (state: RootState) => state.categorySlice;
-export const { resetCategoryState, setTitle } = categorySlice.actions;
+export const { resetCategoryState, setTitle, setDeleteModal, setPostModal, setPutModal } = categorySlice.actions;
 export default categorySlice;

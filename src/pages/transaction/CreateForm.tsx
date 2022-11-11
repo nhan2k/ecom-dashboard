@@ -8,7 +8,7 @@ import TextField from '@mui/material/TextField';
 import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
-import { createTransactionAsyncThunk, getTransactionState, setCode, setOrderId } from '@/features/redux/slices/transaction';
+import { createTransactionAsyncThunk, getTransactionState, setCode, setOrderId, setPostModal } from '@/features/redux/slices/transaction';
 
 const theme = createTheme();
 type Inputs = {
@@ -16,10 +16,8 @@ type Inputs = {
   code: string;
 };
 
-interface ICreateForm {
-  handleCloseModalCreate: any;
-}
-const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
+interface ICreateForm {}
+const CreateForm: React.FC<ICreateForm> = () => {
   const {
     register,
     handleSubmit,
@@ -32,7 +30,7 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
     await dispatch(createTransactionAsyncThunk(data));
     if (postLoading === 'succeeded') {
-      handleCloseModalCreate();
+      dispatch(setPostModal(false));
     }
   };
 

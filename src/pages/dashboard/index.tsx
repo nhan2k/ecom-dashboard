@@ -6,33 +6,151 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
+import { CardActionArea, CircularProgress } from '@mui/material';
+import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
+import { countProductAsyncThunk, getProductState } from '@features/redux/slices/product';
+import { countTransactionAsyncThunk, getTransactionState } from '@features/redux/slices/transaction';
+import { countOrderAsyncThunk, getOrderState } from '@features/redux/slices/order';
+import productImg from './assets/images/product.png';
+import orderImg from './assets/images/order.png';
+import transactionImg from './assets/images/transaction.png';
 
 interface IDashboard {}
 
 const Dashboard: React.FunctionComponent<IDashboard> = () => {
+  const dispatch = useAppDispatch();
+
+  const getAllDashboard = () => {
+    dispatch(countProductAsyncThunk());
+    dispatch(countOrderAsyncThunk());
+    dispatch(countTransactionAsyncThunk());
+  };
+  const productState = useAppSelector(getProductState);
+  const orderState = useAppSelector(getOrderState);
+  const transactionState = useAppSelector(getTransactionState);
+  React.useEffect(() => {
+    let flag = true;
+    if (flag) {
+      getAllDashboard();
+    }
+    return () => {
+      flag = false;
+    };
+  }, []);
+
+  let states = [
+    { state: productState, img: productImg },
+    { state: orderState, img: orderImg },
+    { state: transactionState, img: transactionImg },
+  ];
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-        {Array.from(Array(4)).map((_, index) => (
-          <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={index}>
-            <Item>
-              <Card sx={{ maxWidth: 345 }}>
-                <CardActionArea>
-                  <CardMedia component="img" height="140" image="/static/images/cards/contemplative-reptile.jpg" alt="green iguana" />
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      Lizard
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents except Antarctica
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Item>
-          </Grid>
-        ))}
+        {states.map((element: any, index) => {
+          return (
+            <Grid xs={12} sm={12} md={6} lg={4} xl={3} key={index}>
+              <Item>
+                <Card sx={{ maxWidth: 345 }}>
+                  <CardActionArea>
+                    <CardMedia component="img" height="140" image={element.img} alt="green iguana" />
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {element.state.countLoading === 'pending' ? (
+                          <Box sx={{ display: 'flex' }}>
+                            <CircularProgress />
+                          </Box>
+                        ) : (
+                          ''
+                        )}
+                        {element.state.countLoading === 'failed' ? element.state.countError : ''}
+                        {element.state.countLoading === 'succeeded' ? element.state.count : ''}
+                      </Typography>
+                      <Typography gutterBottom variant="h5" component="div">
+                        Product Quantity Report
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Item>
+            </Grid>
+          );
+        })}
+        {/* <Grid xs={12} sm={12} md={6} lg={4} xl={3}>
+          <Item>
+            <Card sx={{ maxWidth: 345 }}>
+              <CardActionArea>
+                <CardMedia component="img" height="140" image={productImg} alt="green iguana" />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {productState.countLoading === 'pending' ? (
+                      <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      ''
+                    )}
+                    {productState.countLoading === 'failed' ? productState.countError : ''}
+                    {productState.countLoading === 'succeeded' ? productState.count : ''}
+                  </Typography>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Product Quantity Report
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Item>
+        </Grid>
+        <Grid xs={12} sm={12} md={6} lg={4} xl={3}>
+          <Item>
+            <Card sx={{ maxWidth: 345 }}>
+              <CardActionArea>
+                <CardMedia component="img" height="140" image={orderImg} alt="green iguana" />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {orderState.countLoading === 'pending' ? (
+                      <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      ''
+                    )}
+                    {orderState.countLoading === 'failed' ? orderState.countError : ''}
+                    {orderState.countLoading === 'succeeded' ? orderState.count : ''}
+                  </Typography>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Order Count Report
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Item>
+        </Grid>
+        <Grid xs={12} sm={12} md={6} lg={4} xl={3}>
+          <Item>
+            <Card sx={{ maxWidth: 345 }}>
+              <CardActionArea>
+                <CardMedia component="img" height="140" image={transactionImg} alt="green iguana" />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {transactionState.countLoading === 'pending' ? (
+                      <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                      </Box>
+                    ) : (
+                      ''
+                    )}
+                    {transactionState.countLoading === 'failed' ? transactionState.countError : ''}
+                    {transactionState.countLoading === 'succeeded' ? transactionState.count : ''}
+                  </Typography>
+                  <Typography gutterBottom variant="h5" component="div">
+                    Transaction Count Report
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Item>
+        </Grid> */}
       </Grid>
     </Box>
   );

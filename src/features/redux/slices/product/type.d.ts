@@ -25,13 +25,16 @@ type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 interface IProductState {
   dataInput: IDataInput;
   dataGetAll: IDataProduct[];
+  count: number;
   dataGetOne: IDataProduct;
   getAllLoading: TLoading;
+  countLoading: TLoading;
   getOneLoading: TLoading;
   postLoading: TLoading;
   putLoading: TLoading;
   deleteLoading: TLoading;
   getAllError: string;
+  countError: string;
   getOneError: string;
   postError: string;
   putError: string;

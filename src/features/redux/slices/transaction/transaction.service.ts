@@ -17,6 +17,21 @@ const getAllTransaction = async (): Promise<IDataResponse> => {
   }
 };
 
+const countTransaction = async (): Promise<IDataResponse> => {
+  try {
+    const user = getItem('user');
+    const token = user !== null ? user.accessToken : '';
+    const response = await privateHTTP.get('/transaction/count', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
+
 const getOneTransaction = async (id: number): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
@@ -77,4 +92,4 @@ const deleteTransaction = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-export { getAllTransaction, getOneTransaction, createTransaction, putTransaction, deleteTransaction };
+export { getAllTransaction, getOneTransaction, createTransaction, putTransaction, deleteTransaction, countTransaction };

@@ -30,6 +30,9 @@ interface ICategoryState {
   postError: string;
   putError: string;
   deleteError: string;
+  postModal: boolean;
+  putModal: boolean;
+  deleteModal: boolean;
 }
 
 export { IDataCategory, IDataSignin, IAuth, TLoading, ICategoryState };

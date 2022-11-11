@@ -4,6 +4,8 @@ import Modal from '@mui/material/Modal';
 import { IconButton } from '@mui/material';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import UpdateForm from './UpdateForm';
+import { useAppSelector } from '@/features/hooks/reduxHooks';
+import { getTransactionState } from '@/features/redux/slices/transaction';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -27,6 +29,7 @@ const UpdateModal: React.FC<IUpdateModal> = ({ id }) => {
     setOpenModalUpdate(true);
   };
   const handleCloseModalUpdate = () => setOpenModalUpdate(false);
+
   return (
     <div>
       <IconButton color="primary" aria-label="Update" size="large" onClick={handleOpenModalUpdate}>
@@ -34,7 +37,7 @@ const UpdateModal: React.FC<IUpdateModal> = ({ id }) => {
       </IconButton>
       <Modal open={openModalUpdate} onClose={handleCloseModalUpdate} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <UpdateForm id={id} handleCloseModalUpdate={handleCloseModalUpdate} />
+          <UpdateForm id={id} />
         </Box>
       </Modal>
     </div>

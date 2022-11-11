@@ -1,12 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ITransactionState, IDataTransaction } from './type';
 import { RootState } from '@features/redux/store';
-import { getAllTransaction, getOneTransaction, createTransaction, putTransaction, deleteTransaction } from './transaction.service';
+import { getAllTransaction, getOneTransaction, createTransaction, putTransaction, deleteTransaction, countTransaction } from './transaction.service';
 
 const prefixType = 'Transaction';
 const getAllTransactionAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
   try {
     const dataResponse = await getAllTransaction();
+    return dataResponse;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+const countTransactionAsyncThunk = createAsyncThunk(`${prefixType}/count`, async (_, thunkAPI) => {
+  try {
+    const dataResponse = await countTransaction();
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -50,18 +58,24 @@ const initialState: ITransactionState = {
     orderId: 1,
     code: '',
   },
-  daTransactionetAll: [],
-  daTransactionetOne: {},
+  dataTransactionGetAll: [],
+  count: 0,
+  dataTransactionGetOne: {},
   getAllLoading: 'idle',
+  countLoading: 'idle',
   getOneLoading: 'idle',
   postLoading: 'idle',
   putLoading: 'idle',
   deleteLoading: 'idle',
   getAllError: '',
+  countError: '',
   getOneError: '',
   postError: '',
   putError: '',
   deleteError: '',
+  postModal: false,
+  putModal: false,
+  deleteModal: false,
 };
 
 const TransactionSlice = createSlice({
@@ -89,6 +103,24 @@ const TransactionSlice = createSlice({
         },
       };
     },
+    setPostModal: (state, action) => {
+      return {
+        ...state,
+        postModal: action.payload,
+      };
+    },
+    setPutModal: (state, action) => {
+      return {
+        ...state,
+        putModal: action.payload,
+      };
+    },
+    setDeleteModal: (state, action) => {
+      return {
+        ...state,
+        deleteModal: action.payload,
+      };
+    },
   },
   extraReducers(builder) {
     builder.addCase(getAllTransactionAsyncThunk.pending, (state: ITransactionState) => {
@@ -109,7 +141,7 @@ const TransactionSlice = createSlice({
       return {
         ...state,
         getAllLoading: 'succeeded',
-        daTransactionetAll: action.payload.data,
+        dataTransactionGetAll: action.payload.data,
       };
     });
     builder.addCase(getAllTransactionAsyncThunk.rejected, (state: ITransactionState, action: PayloadAction<any>) => {
@@ -117,6 +149,35 @@ const TransactionSlice = createSlice({
         ...state,
         getAllLoading: 'failed',
         getAllError: action.payload.data.message,
+      };
+    });
+
+    builder.addCase(countTransactionAsyncThunk.pending, (state: ITransactionState) => {
+      return {
+        ...state,
+        countLoading: 'pending',
+      };
+    });
+    builder.addCase(countTransactionAsyncThunk.fulfilled, (state: ITransactionState, action: PayloadAction<IDataTransaction | any>) => {
+      if (!action.payload.isSuccess) {
+        return {
+          ...state,
+          countLoading: 'failed',
+          countError: action.payload.data.message,
+        };
+      }
+
+      return {
+        ...state,
+        countLoading: 'succeeded',
+        count: action.payload.data,
+      };
+    });
+    builder.addCase(countTransactionAsyncThunk.rejected, (state: ITransactionState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        countLoading: 'failed',
+        countError: action.payload.data.message,
       };
     });
 
@@ -138,7 +199,7 @@ const TransactionSlice = createSlice({
       return {
         ...state,
         getOneLoading: 'succeeded',
-        daTransactionetAll: action.payload.data,
+        dataTransactionGetOne: action.payload.data,
       };
     });
     builder.addCase(getOneTransactionAsyncThunk.rejected, (state: ITransactionState, action: PayloadAction<any>) => {
@@ -167,7 +228,7 @@ const TransactionSlice = createSlice({
       return {
         ...state,
         postLoading: 'succeeded',
-        daTransactionetAll: [...state.daTransactionetAll, action.payload.data],
+        dataTransactionGetAll: [...state.dataTransactionGetAll, action.payload.data],
       };
     });
     builder.addCase(createTransactionAsyncThunk.rejected, (state: ITransactionState, action: PayloadAction<any>) => {
@@ -197,7 +258,7 @@ const TransactionSlice = createSlice({
       return {
         ...state,
         putLoading: 'succeeded',
-        daTransactionetAll: state.daTransactionetAll.map((element: IDataTransaction) => (element.id === id ? action.payload.data : element)),
+        dataTransactionGetAll: state.dataTransactionGetAll.map((element: IDataTransaction) => (element.id === id ? action.payload.data : element)),
       };
     });
     builder.addCase(putTransactionAsyncThunk.rejected, (state: ITransactionState, action: PayloadAction<any>) => {
@@ -227,7 +288,7 @@ const TransactionSlice = createSlice({
       return {
         ...state,
         deleteLoading: 'succeeded',
-        daTransactionetAll: state.daTransactionetAll.filter((element: IDataTransaction) => {
+        dataTransactionGetAll: state.dataTransactionGetAll.filter((element: IDataTransaction) => {
           return Number(element.id) !== Number(id);
         }),
       };
@@ -242,7 +303,7 @@ const TransactionSlice = createSlice({
   },
 });
 
-export { getAllTransactionAsyncThunk, getOneTransactionAsyncThunk, createTransactionAsyncThunk, putTransactionAsyncThunk, deleteTransactionAsyncThunk };
+export { getAllTransactionAsyncThunk, getOneTransactionAsyncThunk, createTransactionAsyncThunk, putTransactionAsyncThunk, deleteTransactionAsyncThunk, countTransactionAsyncThunk };
 export const getTransactionState = (state: RootState) => state.TransactionSlice;
-export const { resetTransactionState, setCode, setOrderId } = TransactionSlice.actions;
+export const { resetTransactionState, setCode, setOrderId, setDeleteModal, setPostModal, setPutModal } = TransactionSlice.actions;
 export default TransactionSlice;

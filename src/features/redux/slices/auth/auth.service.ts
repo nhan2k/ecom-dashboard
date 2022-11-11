@@ -1,11 +1,19 @@
 import { privateHTTP, publicHTTP } from '@features/utils/axios';
-import { IDataAuth, IDataSignin, IAuth } from './type';
+import { IDataSignup, IDataSignin } from './type';
 import { IDataResponse } from '@features/utils/axios';
+
+const signup = async (data: IDataSignup): Promise<IDataResponse> => {
+  try {
+    const response = await publicHTTP.post('/signup/vendor', data);
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
 
 const signin = async (data: IDataSignin): Promise<IDataResponse> => {
   try {
     const response = await publicHTTP.post('/api/v1', data);
-    console.log('🚀 ~ file: auth.service.ts ~ line 8 ~ signin ~ response', response);
     return response.data;
   } catch (error: any) {
     return error.response.data;
@@ -20,4 +28,4 @@ const signout = async (): Promise<IDataResponse> => {
     return error.response.data;
   }
 };
-export { signin, signout };
+export { signin, signout, signup };

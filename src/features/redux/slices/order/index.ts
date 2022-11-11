@@ -1,12 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IOrderState, IDataOrder } from './type';
 import { RootState } from '@features/redux/store';
-import { getAllOrder, getOneOrder, createOrder, putOrder, deleteOrder } from './order.service';
+import { getAllOrder, getOneOrder, createOrder, putOrder, deleteOrder, countOrder } from './order.service';
 
 const prefixType = 'Order';
 const getAllOrderAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
   try {
     const dataResponse = await getAllOrder();
+    return dataResponse;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+const countOrderAsyncThunk = createAsyncThunk(`${prefixType}/count`, async (_, thunkAPI) => {
+  try {
+    const dataResponse = await countOrder();
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error.response.data);
@@ -51,13 +59,16 @@ const initialState: IOrderState = {
     token: '',
   },
   dataGetAll: [],
+  count: 0,
   dataGetOne: {},
   getAllLoading: 'idle',
+  countLoading: 'idle',
   getOneLoading: 'idle',
   postLoading: 'idle',
   putLoading: 'idle',
   deleteLoading: 'idle',
   getAllError: '',
+  countError: '',
   getOneError: '',
   postError: '',
   putError: '',
@@ -117,6 +128,35 @@ const OrderSlice = createSlice({
         ...state,
         getAllLoading: 'failed',
         getAllError: action.payload.data.message,
+      };
+    });
+
+    builder.addCase(countOrderAsyncThunk.pending, (state: IOrderState) => {
+      return {
+        ...state,
+        countLoading: 'pending',
+      };
+    });
+    builder.addCase(countOrderAsyncThunk.fulfilled, (state: IOrderState, action: PayloadAction<IDataOrder | any>) => {
+      if (!action.payload.isSuccess) {
+        return {
+          ...state,
+          countLoading: 'failed',
+          countError: action.payload.data.message,
+        };
+      }
+
+      return {
+        ...state,
+        countLoading: 'succeeded',
+        count: action.payload.data,
+      };
+    });
+    builder.addCase(countOrderAsyncThunk.rejected, (state: IOrderState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        countLoading: 'failed',
+        countError: action.payload.data.message,
       };
     });
 
@@ -242,7 +282,7 @@ const OrderSlice = createSlice({
   },
 });
 
-export { getAllOrderAsyncThunk, getOneOrderAsyncThunk, createOrderAsyncThunk, putOrderAsyncThunk, deleteOrderAsyncThunk };
+export { getAllOrderAsyncThunk, getOneOrderAsyncThunk, createOrderAsyncThunk, putOrderAsyncThunk, deleteOrderAsyncThunk, countOrderAsyncThunk };
 export const getOrderState = (state: RootState) => state.OrderSlice;
 export const { resetOrderState, setSessionId, setToken } = OrderSlice.actions;
 export default OrderSlice;

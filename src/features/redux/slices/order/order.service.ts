@@ -17,6 +17,21 @@ const getAllOrder = async (): Promise<IDataResponse> => {
   }
 };
 
+const countOrder = async (): Promise<IDataResponse> => {
+  try {
+    const user = getItem('user');
+    const token = user !== null ? user.accessToken : '';
+    const response = await privateHTTP.get('/order/count', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
+
 const getOneOrder = async (id: number): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
@@ -77,4 +92,4 @@ const deleteOrder = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-export { getAllOrder, getOneOrder, createOrder, putOrder, deleteOrder };
+export { getAllOrder, getOneOrder, createOrder, putOrder, deleteOrder, countOrder };

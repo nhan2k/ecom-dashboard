@@ -34,12 +34,10 @@ const DeleteModal: React.FC<IDeleteModal> = ({ id }) => {
   };
   const handleCloseModalDelete = () => setOpenModalDelete(false);
 
-  const handleDelete = (e: React.BaseSyntheticEvent) => {
+  const handleDelete = async (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    dispatch(deleteTransactionAsyncThunk(id));
-    if (deleteLoading === 'succeeded') {
-      handleCloseModalDelete();
-    }
+    await dispatch(deleteTransactionAsyncThunk(id));
+    handleCloseModalDelete();
   };
 
   return (

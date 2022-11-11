@@ -21,7 +21,7 @@ interface ITransaction {}
 
 const Transaction: React.FunctionComponent<ITransaction> = () => {
   const dispatch = useAppDispatch();
-  const { daTransactionetAll, getAllLoading } = useAppSelector(getTransactionState);
+  const { dataTransactionGetAll, getAllLoading } = useAppSelector(getTransactionState);
 
   React.useEffect(() => {
     let flag = true;
@@ -47,7 +47,7 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
 
   let columns: any[] = [];
   if (getAllLoading === 'succeeded') {
-    columns = daTransactionetAll.length > 0 ? [...Object.keys(daTransactionetAll[0])] : [];
+    columns = dataTransactionGetAll.length > 0 ? [...Object.keys(dataTransactionGetAll[0])] : [];
   }
   let hiddenCol: string[] = [];
 
@@ -68,7 +68,7 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
           <TableHead>
             <TableRow>
               {getAllLoading === 'succeeded' ? (
-                daTransactionetAll.length > 0 ? (
+                dataTransactionGetAll.length > 0 ? (
                   columns.map((column: any, index: number) => {
                     if (hiddenCol.includes(column)) {
                       return;
@@ -87,7 +87,7 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
               ) : (
                 <React.Fragment />
               )}
-              {daTransactionetAll.length > 0 ? (
+              {dataTransactionGetAll.length > 0 ? (
                 <TableCell>
                   <Typography fontSize={'1.6rem'} textAlign={'center'}>
                     Action
@@ -105,8 +105,8 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
 
           <TableBody>
             {getAllLoading === 'succeeded' ? (
-              daTransactionetAll.length > 0 ? (
-                daTransactionetAll.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any, index: number) => {
+              dataTransactionGetAll.length > 0 ? (
+                dataTransactionGetAll.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row: any, index: number) => {
                   return (
                     <TableRow hover role="checkbox" tabIndex={-1} key={index}>
                       {getAllLoading === 'succeeded' ? (
@@ -142,7 +142,7 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination rowsPerPageOptions={[10, 25, 100]} component="div" count={daTransactionetAll.length} rowsPerPage={rowsPerPage} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
+      <TablePagination rowsPerPageOptions={[10, 25, 100]} component="div" count={dataTransactionGetAll.length} rowsPerPage={rowsPerPage} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
     </Paper>
   );
 };

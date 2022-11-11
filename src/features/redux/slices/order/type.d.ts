@@ -38,13 +38,16 @@ type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 interface IOrderState {
   dataInput: IDataInput;
   dataGetAll: IDataOrder[];
+  count: number;
   dataGetOne: IDataOrder;
   getAllLoading: TLoading;
+  countLoading: TLoading;
   getOneLoading: TLoading;
   postLoading: TLoading;
   putLoading: TLoading;
   deleteLoading: TLoading;
   getAllError: string;
+  countError: string;
   getOneError: string;
   postError: string;
   putError: string;

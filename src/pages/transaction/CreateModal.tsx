@@ -4,6 +4,8 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import AddIcon from '@mui/icons-material/Add';
 import CreateForm from './CreateForm';
+import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
+import { getTransactionState, setPostModal } from '@/features/redux/slices/transaction';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -20,17 +22,18 @@ const style = {
 interface ICreateModal {}
 
 const CreateModal: React.FC<ICreateModal> = () => {
-  const [openModalCreate, setOpenModalCreate] = React.useState(false);
-  const handleOpenModalCreate = () => setOpenModalCreate(true);
-  const handleCloseModalCreate = () => setOpenModalCreate(false);
+  const { postModal } = useAppSelector(getTransactionState);
+  const dispatch = useAppDispatch();
+  const handleOpenModalCreate = () => dispatch(setPostModal(true));
+  const handleCloseModalCreate = () => dispatch(setPostModal(false));
   return (
     <div>
       <Button variant="outlined" startIcon={<AddIcon />} onClick={handleOpenModalCreate}>
         Create
       </Button>
-      <Modal open={openModalCreate} onClose={handleCloseModalCreate} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+      <Modal open={postModal} onClose={handleCloseModalCreate} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
-          <CreateForm handleCloseModalCreate={handleCloseModalCreate} />
+          <CreateForm />
         </Box>
       </Modal>
     </div>

@@ -21,18 +21,24 @@ type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 interface ITransactionState {
   dataInput: IDataInput;
-  daTransactionetAll: IDataTransaction[];
-  daTransactionetOne: IDataTransaction;
+  dataTransactionGetAll: IDataTransaction[];
+  count: number;
+  dataTransactionGetOne: IDataTransaction;
   getAllLoading: TLoading;
+  countLoading: TLoading;
   getOneLoading: TLoading;
   postLoading: TLoading;
   putLoading: TLoading;
   deleteLoading: TLoading;
   getAllError: string;
+  countError: string;
   getOneError: string;
   postError: string;
   putError: string;
   deleteError: string;
+  postModal: boolean;
+  putModal: boolean;
+  deleteModal: boolean;
 }
 
 export { IDataTransaction, IDataSignin, IAuth, TLoading, ITransactionState };
