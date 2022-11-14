@@ -48,7 +48,7 @@ const Category: React.FunctionComponent<ICategory> = () => {
   if (getAllLoading === 'succeeded') {
     columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
   }
-  let hiddenCol: string[] = ['deletedAt'];
+  let hiddenCol: string[] = ['deletedAt', 'content'];
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>

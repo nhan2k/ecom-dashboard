@@ -40,9 +40,9 @@
     "sass": "^1.54.9"
   },
   "scripts": {
-    "start": "react-app-rewired start",
-    "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
+    "start": "set PORT=3001 && react-app-rewired start",
+    "build": "set PORT=3001 && react-app-rewired build",
+    "test": "set PORT=3001 && react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

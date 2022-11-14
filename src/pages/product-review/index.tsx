@@ -49,7 +49,7 @@ const ProductReview: React.FunctionComponent<IProductReview> = () => {
   if (getAllLoading === 'succeeded') {
     columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
   }
-  let hiddenCol: string[] = [];
+  let hiddenCol: string[] = ['content'];
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>

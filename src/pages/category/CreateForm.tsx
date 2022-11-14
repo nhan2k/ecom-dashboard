@@ -9,11 +9,9 @@ import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
 import { createCategoryAsyncThunk, getCategoryState, setTitle } from '@/features/redux/slices/category';
+import { IDataCategory } from '@features/redux/slices/category/type';
 
 const theme = createTheme();
-type Inputs = {
-  title: string;
-};
 
 interface ICreateForm {
   handleCloseModalCreate: any;
@@ -23,12 +21,12 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<IDataCategory>();
 
-  const { dataInput, postLoading, postError } = useAppSelector(getCategoryState);
+  const { postLoading, postError } = useAppSelector(getCategoryState);
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<IDataCategory> = async (data) => {
     await dispatch(createCategoryAsyncThunk(data));
     if (postLoading === 'succeeded') {
       handleCloseModalCreate();
@@ -46,17 +44,16 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('title', { required: 'Required' })}
-                    error={errors.title ? true : false}
-                    id="outlined-error-helper-text"
-                    label="Title"
-                    placeholder="Enter Title"
-                    helperText={errors.title ? String(errors.title.message) : ''}
-                    fullWidth
-                    value={dataInput.title}
-                    onChange={(e: React.BaseSyntheticEvent) => dispatch(setTitle(e.target.value))}
-                  />
+                  <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title" placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+                    <Typography>Choose Image</Typography>
+                    <Button variant="contained" component="label">
+                      Upload
+                      <input hidden accept="image/*" multiple type="file" {...register('content')} />
+                    </Button>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12}>
                   {postLoading === 'failed' ? (

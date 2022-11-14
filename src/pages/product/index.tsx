@@ -49,7 +49,7 @@ const Product: React.FunctionComponent<IProduct> = () => {
   if (getAllLoading === 'succeeded') {
     columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
   }
-  let hiddenCol: string[] = ['userId', 'summary', 'slug', 'shop', 'updatedAt', 'deletedAt', 'type', 'price', 'discount'];
+  let hiddenCol: string[] = ['content'];
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>

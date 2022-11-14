@@ -46,11 +46,17 @@ const getOneProduct = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-const createProduct = async (data: IDataProduct): Promise<IDataResponse> => {
+const createProduct = async (data: IDataProduct): Promise<IDataResponse | any> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
-    const response = await privateHTTP.post('/product', data, {
+    const formData = new FormData();
+    const { title, content } = data;
+    formData.append('title', String(title));
+    if (content) {
+      formData.append('img', content[0], content[0].name);
+    }
+    const response = await privateHTTP.post('/product', formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

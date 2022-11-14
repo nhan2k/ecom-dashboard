@@ -8,7 +8,7 @@ interface IDataProduct {
   price?: number;
   discount?: number;
   shop?: number;
-  content?: JSON;
+  content?: FileList;
   publishedAt?: Date;
   startsAt?: Date;
   endsAt?: Date;

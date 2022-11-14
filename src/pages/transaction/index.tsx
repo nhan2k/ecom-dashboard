@@ -49,7 +49,7 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
   if (getAllLoading === 'succeeded') {
     columns = dataTransactionGetAll.length > 0 ? [...Object.keys(dataTransactionGetAll[0])] : [];
   }
-  let hiddenCol: string[] = [];
+  let hiddenCol: string[] = ['content'];
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
