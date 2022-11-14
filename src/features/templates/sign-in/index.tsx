@@ -87,8 +87,6 @@ export default function SignIn() {
                   fullWidth
                   id="email"
                   label="Email Address"
-                  name="email"
-                  autoComplete="email"
                   value={email}
                   onChange={onEmailChange}
                 />
@@ -99,24 +97,7 @@ export default function SignIn() {
                 )}
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  {...register('password', {
-                    required: true,
-                    minLength: {
-                      value: 5,
-                      message: 'Min length is 5',
-                    },
-                  })}
-                  id="password"
-                  label="Password"
-                  name="password"
-                  margin="normal"
-                  fullWidth
-                  type="password"
-                  autoComplete="current-password"
-                  value={password}
-                  onChange={onPasswordChange}
-                />
+                <TextField {...register('password')} id="password" label="Password" margin="normal" fullWidth type="password" value={password} onChange={onPasswordChange} />
                 {errors.password && (
                   <Typography variant="h6" color={'red'}>
                     {errors.password.message || 'Enter your password'}

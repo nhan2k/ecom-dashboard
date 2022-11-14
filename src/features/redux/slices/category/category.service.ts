@@ -57,7 +57,14 @@ const putCategory = async (data: IDataCategory, id: number): Promise<IDataRespon
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
-    const response = await privateHTTP.put(`/category/${id}`, data, {
+    const formData = new FormData();
+    const { title, content, metaTitle } = data;
+    formData.append('title', String(title));
+    formData.append('metaTitle', String(metaTitle));
+    if (content) {
+      formData.append('img', content[0], content[0].name);
+    }
+    const response = await privateHTTP.put(`/category/${id}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

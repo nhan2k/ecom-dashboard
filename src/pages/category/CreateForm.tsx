@@ -5,10 +5,10 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, CircularProgress, Stack } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
-import { createCategoryAsyncThunk, getCategoryState, setTitle } from '@/features/redux/slices/category';
+import { createCategoryAsyncThunk, getCategoryState } from '@/features/redux/slices/category';
 import { IDataCategory } from '@features/redux/slices/category/type';
 
 const theme = createTheme();
@@ -23,7 +23,7 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
     formState: { errors },
   } = useForm<IDataCategory>();
 
-  const { postLoading, postError } = useAppSelector(getCategoryState);
+  const { postLoading, postError, dataGetAll, getAllLoading } = useAppSelector(getCategoryState);
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<IDataCategory> = async (data) => {
@@ -32,6 +32,16 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
       handleCloseModalCreate();
     }
   };
+
+  const options =
+    getAllLoading === 'succeeded'
+      ? dataGetAll.map((element: any) => {
+          return {
+            label: element.title,
+            id: element.id,
+          };
+        })
+      : [];
 
   return (
     <ThemeProvider theme={theme}>
@@ -43,13 +53,19 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
           <React.Fragment>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
+                <Grid item xs={6} sm={6}>
+                  <Autocomplete disablePortal options={options} renderInput={(params) => <TextField {...params} label="Parent Title" fullWidth />} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
                   <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title" placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
                 </Grid>
                 <Grid item xs={12} sm={12}>
+                  <TextField {...register('metaTitle', { required: 'Required' })} error={errors.metaTitle ? true : false} id="outlined-error-helper-text" label="Meta Title" placeholder="Enter Meta Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
+                </Grid>
+                <Grid item xs={12} sm={12}>
                   <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-                    <Typography>Choose Image</Typography>
-                    <Button variant="contained" component="label">
+                    <Typography variant="h4">Choose Image</Typography>
+                    <Button variant="contained" component="label" size="large">
                       Upload
                       <input hidden accept="image/*" multiple type="file" {...register('content')} />
                     </Button>
@@ -69,10 +85,13 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
                         <CircularProgress />
                       </Box>
                     ) : (
-                      <Button variant="contained" style={{ padding: '1rem 3rem' }} type="submit">
+                      <Button variant="contained" style={{ padding: '1rem 3rem', margin: '0 1rem' }} type="submit">
                         <Typography variant="h5">Submit</Typography>
                       </Button>
                     )}
+                    <Button variant="contained" style={{ padding: '1rem 3rem', margin: '0 1rem' }} color="secondary" onClick={() => handleCloseModalCreate()}>
+                      <Typography variant="h5">Cancel</Typography>
+                    </Button>
                   </Container>
                 </Grid>
               </Grid>

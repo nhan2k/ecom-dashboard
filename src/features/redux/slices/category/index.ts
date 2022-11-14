@@ -46,9 +46,7 @@ const deleteCategoryAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async 
 });
 
 const initialState: ICategoryState = {
-  dataInput: {
-    title: '',
-  },
+  dataInput: {},
   dataGetAll: [],
   dataGetOne: {},
   getAllLoading: 'idle',
@@ -73,13 +71,17 @@ const categorySlice = createSlice({
     resetCategoryState: () => {
       return initialState;
     },
-    setTitle: (state, action) => {
+    setDataInputById: (state, action) => {
+      let element = state.dataGetAll.find((element) => element.id === action.payload) || {};
       return {
         ...state,
-        dataInput: {
-          ...state.dataInput,
-          title: action.payload,
-        },
+        dataInput: element,
+      };
+    },
+    setDataInput: (state, action) => {
+      return {
+        ...state,
+        [action.payload.name]: action.payload.value,
       };
     },
     setPostModal: (state, action) => {
@@ -255,5 +257,5 @@ const categorySlice = createSlice({
 
 export { getAllCategoryAsyncThunk, getOneCategoryAsyncThunk, createCategoryAsyncThunk, putCategoryAsyncThunk, deleteCategoryAsyncThunk };
 export const getCategoryState = (state: RootState) => state.categorySlice;
-export const { resetCategoryState, setTitle, setDeleteModal, setPostModal, setPutModal } = categorySlice.actions;
+export const { resetCategoryState, setDataInputById, setDeleteModal, setPostModal, setPutModal, setDataInput } = categorySlice.actions;
 export default categorySlice;

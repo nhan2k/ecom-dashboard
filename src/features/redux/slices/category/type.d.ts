@@ -10,14 +10,10 @@ interface IDataCategory {
   deletedAt?: Date;
 }
 
-interface IDataInput {
-  title: string;
-}
-
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 interface ICategoryState {
-  dataInput: IDataInput;
+  dataInput: IDataCategory;
   dataGetAll: IDataCategory[];
   dataGetOne: IDataCategory;
   getAllLoading: TLoading;
