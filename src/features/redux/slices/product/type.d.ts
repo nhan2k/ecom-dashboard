@@ -8,6 +8,7 @@ interface IDataProduct {
   price?: number;
   discount?: number;
   shop?: number;
+  quantity?: number;
   content?: FileList;
   publishedAt?: Date;
   startsAt?: Date;
@@ -16,14 +17,10 @@ interface IDataProduct {
   sku?: string;
 }
 
-interface IDataInput {
-  title: string;
-}
-
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 interface IProductState {
-  dataInput: IDataInput;
+  dataInput: IDataProduct;
   dataGetAll: IDataProduct[];
   count: number;
   dataGetOne: IDataProduct;

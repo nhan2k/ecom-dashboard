@@ -7,7 +7,8 @@ import { Alert, Button, Grid, Stack, TextField } from '@mui/material';
 import { Box, CircularProgress } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
-import { getProductState, putProductAsyncThunk, setTitle } from '@/features/redux/slices/product';
+import { getProductState, putProductAsyncThunk } from '@/features/redux/slices/product';
+import { IDataProduct } from '@features/redux/slices/product/type';
 
 const theme = createTheme();
 type Inputs = {
@@ -22,12 +23,13 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<IDataProduct>();
 
   const { dataInput, putLoading, putError } = useAppSelector(getProductState);
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<IDataProduct> = async (data) => {
+    data = { ...dataInput };
     await dispatch(putProductAsyncThunk({ data, id }));
     if (putLoading === 'succeeded') {
       handleCloseModalUpdate();
@@ -43,18 +45,26 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
           <React.Fragment>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title " placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : 'Required'} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('type')} type="number" variant="filled" error={errors.type ? true : false} id="outlined-error-helper-text" label="Type" placeholder="Enter Type" helperText={errors.type ? String(errors.type.message) : ''} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('quantity')} type="number" variant="filled" error={errors.quantity ? true : false} id="outlined-error-helper-text" label="Quantity" placeholder="Enter Quantity" helperText={errors.quantity ? String(errors.quantity.message) : ''} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('shop')} type="number" variant="filled" error={errors.title ? true : false} id="outlined-error-helper-text" label="Shop" placeholder="Enter shop" helperText={errors.shop ? String(errors.shop.message) : ''} fullWidth />
+                </Grid>
                 <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('title', { required: 'Required' })}
-                    error={errors.title ? true : false}
-                    id="outlined-error-helper-text"
-                    label="Title"
-                    placeholder="Enter Title"
-                    helperText={errors.title ? String(errors.title.message) : ''}
-                    fullWidth
-                    value={dataInput.title}
-                    onChange={(e: React.BaseSyntheticEvent) => dispatch(setTitle(e.target.value))}
-                  />
+                  <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
+                    <Typography variant="h4">Choose Image</Typography>
+                    <Button variant="contained" component="label" size="large">
+                      Upload
+                      <input hidden accept="image/*" multiple type="file" {...register('content')} />
+                    </Button>
+                  </Stack>
                 </Grid>
                 <Grid item xs={12}>
                   {putLoading === 'failed' ? (
@@ -70,10 +80,13 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
                         <CircularProgress />
                       </Box>
                     ) : (
-                      <Button variant="contained" type="submit" style={{ padding: '1rem 3rem' }}>
+                      <Button variant="contained" style={{ padding: '1rem 3rem', margin: '0 1rem' }} type="submit">
                         <Typography variant="h5">Submit</Typography>
                       </Button>
                     )}
+                    <Button variant="contained" style={{ padding: '1rem 3rem', margin: '0 1rem' }} color="secondary" onClick={() => handleCloseModalUpdate()}>
+                      <Typography variant="h5">Cancel</Typography>
+                    </Button>
                   </Container>
                 </Grid>
               </Grid>

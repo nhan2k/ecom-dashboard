@@ -81,7 +81,10 @@ const categorySlice = createSlice({
     setDataInput: (state, action) => {
       return {
         ...state,
-        [action.payload.name]: action.payload.value,
+        dataInput: {
+          ...state.dataInput,
+          [action.payload.name]: action.payload.value,
+        },
       };
     },
     setPostModal: (state, action) => {

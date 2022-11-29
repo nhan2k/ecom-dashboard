@@ -23,15 +23,8 @@ const Transaction: React.FunctionComponent<ITransaction> = () => {
   const dispatch = useAppDispatch();
   const { dataTransactionGetAll, getAllLoading } = useAppSelector(getTransactionState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllTransactionAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllTransactionAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

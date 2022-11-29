@@ -23,15 +23,8 @@ const ProductReview: React.FunctionComponent<IProductReview> = () => {
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getProductReviewState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllProductReviewAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllProductReviewAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

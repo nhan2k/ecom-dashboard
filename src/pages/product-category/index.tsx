@@ -23,15 +23,8 @@ const ProductCategoryCategory: React.FunctionComponent<IProductCategoryCategory>
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getProductCategoryState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllProductCategoryAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllProductCategoryAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

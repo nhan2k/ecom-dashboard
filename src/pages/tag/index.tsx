@@ -23,15 +23,8 @@ const Tag: React.FunctionComponent<ITag> = () => {
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getTagState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllTagAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllTagAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

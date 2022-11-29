@@ -22,15 +22,8 @@ const Users: React.FunctionComponent<IUsers> = () => {
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getUserState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllUserAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllUserAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

@@ -23,15 +23,8 @@ const Order: React.FunctionComponent<IOrder> = () => {
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getOrderState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllOrderAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllOrderAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);

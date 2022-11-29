@@ -15,7 +15,8 @@ import Box from '@mui/material/Box';
 import CreateModal from './CreateModal';
 import UpdateModal from './UpdateModal';
 import DeleteModal from './DeleteModal';
-import { Typography } from '@mui/material';
+import { CardMedia, Typography } from '@mui/material';
+import moment from 'moment';
 
 interface IProduct {}
 
@@ -23,15 +24,8 @@ const Product: React.FunctionComponent<IProduct> = () => {
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getProductState);
 
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      dispatch(getAllProductAsyncThunk());
-    }
-
-    return () => {
-      flag = false;
-    };
+  React.useMemo(() => {
+    dispatch(getAllProductAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -47,9 +41,9 @@ const Product: React.FunctionComponent<IProduct> = () => {
 
   let columns: any[] = [];
   if (getAllLoading === 'succeeded') {
-    columns = dataGetAll.length > 0 ? [...Object.keys(dataGetAll[0])] : [];
+    columns = dataGetAll.length > 0 ? ['content', ...Object.keys(dataGetAll[0]).filter((element: string) => element !== 'content')] : [];
   }
-  let hiddenCol: string[] = ['content'];
+  let hiddenCol: string[] = ['id', 'userId', 'metaTitle', 'summary', 'sku', 'deletedAt', 'content', 'startsAt', 'endsAt', 'slug', 'discount'];
 
   return (
     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
@@ -75,7 +69,7 @@ const Product: React.FunctionComponent<IProduct> = () => {
                     }
                     return (
                       <TableCell key={index}>
-                        <Typography fontSize={'1.6rem'} textAlign={'center'}>
+                        <Typography fontSize={'1.6rem'} textAlign={'left'}>
                           {column}
                         </Typography>
                       </TableCell>
@@ -89,7 +83,7 @@ const Product: React.FunctionComponent<IProduct> = () => {
               )}
               {dataGetAll.length > 0 ? (
                 <TableCell>
-                  <Typography fontSize={'1.6rem'} textAlign={'center'}>
+                  <Typography fontSize={'1.6rem'} textAlign={'left'}>
                     Action
                   </Typography>
                 </TableCell>
@@ -114,7 +108,10 @@ const Product: React.FunctionComponent<IProduct> = () => {
                           if (hiddenCol.includes(column)) {
                             return;
                           }
-                          const value = row[column];
+                          let value = row[column];
+                          if (column === 'createdAt' || column === 'updatedAt') {
+                            value = moment(value).format('llll');
+                          }
                           return (
                             <React.Fragment key={indexCol}>
                               <TableCell>

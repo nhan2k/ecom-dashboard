@@ -53,7 +53,7 @@ const createCategory = async (data: IDataCategory): Promise<IDataResponse> => {
   }
 };
 
-const putCategory = async (data: IDataCategory, id: number): Promise<IDataResponse> => {
+const putCategory = async (data: any, id: number): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
@@ -61,7 +61,7 @@ const putCategory = async (data: IDataCategory, id: number): Promise<IDataRespon
     const { title, content, metaTitle } = data;
     formData.append('title', String(title));
     formData.append('metaTitle', String(metaTitle));
-    if (content) {
+    if (content && content.length > 0) {
       formData.append('img', content[0], content[0].name);
     }
     const response = await privateHTTP.put(`/category/${id}`, formData, {

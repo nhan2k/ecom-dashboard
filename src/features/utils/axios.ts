@@ -5,11 +5,11 @@ export interface IDataResponse {
   isSuccess: boolean;
 }
 
-const { REACT_APP_API, REACT_APP_API_PUBLIC } = process.env;
+const { REACT_APP_API, REACT_APP_API_PRIVATE } = process.env;
 
 const publicHTTP = axios.create({ baseURL: String(REACT_APP_API) });
 const privateHTTP = axios.create({
-  baseURL: String(REACT_APP_API_PUBLIC),
+  baseURL: String(REACT_APP_API_PRIVATE),
 });
 
 export { publicHTTP, privateHTTP };

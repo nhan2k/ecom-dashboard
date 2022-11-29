@@ -41,6 +41,7 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
   };
 
   const onSubmit: SubmitHandler<IDataCategory> = async (data) => {
+    data = { ...dataInput };
     await dispatch(putCategoryAsyncThunk({ data, id }));
     if (putLoading === 'succeeded') {
       handleCloseModalUpdate();

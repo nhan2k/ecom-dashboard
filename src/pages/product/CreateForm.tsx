@@ -43,13 +43,22 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
           <React.Fragment>
             <Box component="form" onSubmit={handleSubmit(onSubmit)} encType="multipart/form-data">
               <Grid container spacing={3}>
-                <Grid item xs={12} sm={12}>
-                  <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title" placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title " placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : 'Required'} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('type')} type="number" variant="filled" error={errors.type ? true : false} id="outlined-error-helper-text" label="Type" placeholder="Enter Type" helperText={errors.type ? String(errors.type.message) : ''} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('quantity')} type="number" variant="filled" error={errors.quantity ? true : false} id="outlined-error-helper-text" label="Quantity" placeholder="Enter Quantity" helperText={errors.quantity ? String(errors.quantity.message) : ''} fullWidth />
+                </Grid>
+                <Grid item xs={6} sm={6}>
+                  <TextField {...register('shop')} type="number" variant="filled" error={errors.title ? true : false} id="outlined-error-helper-text" label="Shop" placeholder="Enter shop" helperText={errors.shop ? String(errors.shop.message) : ''} fullWidth />
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-                    <Typography>Choose Image</Typography>
-                    <Button variant="contained" component="label">
+                    <Typography variant="h4">Choose Image</Typography>
+                    <Button variant="contained" component="label" size="large">
                       Upload
                       <input hidden accept="image/*" multiple type="file" {...register('content')} />
                     </Button>
@@ -69,10 +78,13 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
                         <CircularProgress />
                       </Box>
                     ) : (
-                      <Button variant="contained" style={{ padding: '1rem 3rem', marginTop: '1rem' }} type="submit">
+                      <Button variant="contained" style={{ padding: '1rem 3rem', margin: '0 1rem' }} type="submit">
                         <Typography variant="h5">Submit</Typography>
                       </Button>
                     )}
+                    <Button variant="contained" style={{ padding: '1rem 3rem', margin: '0 1rem' }} color="secondary" onClick={() => handleCloseModalCreate()}>
+                      <Typography variant="h5">Cancel</Typography>
+                    </Button>
                   </Container>
                 </Grid>
               </Grid>

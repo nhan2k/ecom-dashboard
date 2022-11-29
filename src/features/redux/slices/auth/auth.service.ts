@@ -13,7 +13,7 @@ const signup = async (data: IDataSignup): Promise<IDataResponse> => {
 
 const signin = async (data: IDataSignin): Promise<IDataResponse> => {
   try {
-    const response = await publicHTTP.post('/api/v1', data);
+    const response = await publicHTTP.post('/api/v1/vendor', data);
     return response.data;
   } catch (error: any) {
     return error.response.data;

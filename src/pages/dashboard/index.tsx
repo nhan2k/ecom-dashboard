@@ -28,14 +28,9 @@ const Dashboard: React.FunctionComponent<IDashboard> = () => {
   const productState = useAppSelector(getProductState);
   const orderState = useAppSelector(getOrderState);
   const transactionState = useAppSelector(getTransactionState);
-  React.useEffect(() => {
-    let flag = true;
-    if (flag) {
-      getAllDashboard();
-    }
-    return () => {
-      flag = false;
-    };
+
+  React.useMemo(() => {
+    getAllDashboard();
   }, []);
 
   let states = [

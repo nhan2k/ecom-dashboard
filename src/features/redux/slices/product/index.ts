@@ -54,9 +54,7 @@ const deleteProductAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async (
 });
 
 const initialState: IProductState = {
-  dataInput: {
-    title: '',
-  },
+  dataInput: {},
   dataGetAll: [],
   count: 0,
   dataGetOne: {},
