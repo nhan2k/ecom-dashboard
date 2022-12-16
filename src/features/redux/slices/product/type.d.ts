@@ -9,12 +9,14 @@ interface IDataProduct {
   discount?: number;
   shop?: number;
   quantity?: number;
-  content?: FileList;
+  image?: any;
   publishedAt?: Date;
   startsAt?: Date;
   endsAt?: Date;
   slug?: string;
   sku?: string;
+  category?: number;
+  meta?: any;
 }
 
 type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
@@ -23,7 +25,7 @@ interface IProductState {
   dataInput: IDataProduct;
   dataGetAll: IDataProduct[];
   count: number;
-  dataGetOne: IDataProduct;
+  dataGetOne: IDataProduct | any;
   getAllLoading: TLoading;
   countLoading: TLoading;
   getOneLoading: TLoading;

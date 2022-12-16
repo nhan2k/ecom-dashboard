@@ -1,9 +1,11 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { IconButton } from '@mui/material';
+import { Button } from '@mui/material';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import UpdateForm from './UpdateForm';
+import { useAppDispatch } from '@/features/hooks/reduxHooks';
+import { setOneProduct } from '@features/redux/slices/product';
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -23,15 +25,17 @@ interface IUpdateModal {
 
 const UpdateModal: React.FC<IUpdateModal> = ({ id }) => {
   const [openModalUpdate, setOpenModalUpdate] = React.useState(false);
+  const dispatch = useAppDispatch();
   const handleOpenModalUpdate = () => {
+    dispatch(setOneProduct(id));
     setOpenModalUpdate(true);
   };
   const handleCloseModalUpdate = () => setOpenModalUpdate(false);
   return (
     <div>
-      <IconButton color="primary" aria-label="Update" size="large" onClick={handleOpenModalUpdate}>
-        <ModeEditIcon />
-      </IconButton>
+      <Button variant="outlined" onClick={handleOpenModalUpdate} startIcon={<ModeEditIcon />}>
+        Edit
+      </Button>
       <Modal open={openModalUpdate} onClose={handleCloseModalUpdate} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <UpdateForm id={id} handleCloseModalUpdate={handleCloseModalUpdate} />

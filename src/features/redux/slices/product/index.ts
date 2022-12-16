@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IProductState, IDataProduct } from './type';
 import { RootState } from '@features/redux/store';
-import { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct } from './product.service';
+import { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct, getAllProductPending } from './product.service';
 
 const prefixType = 'product';
 const getAllProductAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
@@ -12,6 +12,16 @@ const getAllProductAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (
     return thunkAPI.rejectWithValue(error.response.data);
   }
 });
+
+const getAllProductPendingAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
+  try {
+    const dataResponse = await getAllProductPending();
+    return dataResponse;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
 const countProductAsyncThunk = createAsyncThunk(`${prefixType}/count`, async (_, thunkAPI) => {
   try {
     const dataResponse = await countProduct();
@@ -28,7 +38,7 @@ const getOneProductAsyncThunk = createAsyncThunk(`${prefixType}/getOne`, async (
     return thunkAPI.rejectWithValue(error);
   }
 });
-const createProductAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (data: IDataProduct, thunkAPI) => {
+const createProductAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (data: any, thunkAPI) => {
   try {
     const dataResponse = await createProduct(data);
     return dataResponse;
@@ -36,7 +46,7 @@ const createProductAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (
     return thunkAPI.rejectWithValue(error);
   }
 });
-const putProductAsyncThunk = createAsyncThunk(`${prefixType}/put`, async ({ data, id }: { data: IDataProduct; id: number }, thunkAPI) => {
+const putProductAsyncThunk = createAsyncThunk(`${prefixType}/put`, async ({ data, id }: { data: any; id: number }, thunkAPI) => {
   try {
     const dataResponse = await putProduct(data, id);
     return dataResponse;
@@ -88,7 +98,39 @@ const productSlice = createSlice({
         },
       };
     },
+    setOneProduct: (state, action) => {
+      const data = state.dataGetAll.filter((e) => {
+        return e.id === action.payload;
+      });
+
+      return {
+        ...state,
+        dataGetOne: data[0],
+      };
+    },
+    setDataOneProduct: (state, action: PayloadAction<{ key: string; value: string }>) => {
+      return {
+        ...state,
+        dataGetOne: {
+          ...state.dataGetOne,
+          [action.payload.key]: action.payload.value,
+        },
+      };
+    },
+    resetPostLoading: (state) => {
+      return {
+        ...state,
+        postLoading: 'idle',
+      };
+    },
+    resetPutLoading: (state) => {
+      return {
+        ...state,
+        putLoading: 'idle',
+      };
+    },
   },
+
   extraReducers(builder) {
     builder.addCase(getAllProductAsyncThunk.pending, (state: IProductState) => {
       return {
@@ -101,7 +143,7 @@ const productSlice = createSlice({
         return {
           ...state,
           getAllLoading: 'failed',
-          getAllError: action.payload.data.message,
+          getAllError: action.payload.message,
         };
       }
 
@@ -115,7 +157,7 @@ const productSlice = createSlice({
       return {
         ...state,
         getAllLoading: 'failed',
-        getAllError: action.payload.data.message,
+        getAllError: action.payload.message,
       };
     });
 
@@ -130,7 +172,7 @@ const productSlice = createSlice({
         return {
           ...state,
           countLoading: 'failed',
-          countError: action.payload.data.message,
+          countError: action.payload.message,
         };
       }
 
@@ -144,7 +186,7 @@ const productSlice = createSlice({
       return {
         ...state,
         countLoading: 'failed',
-        countError: action.payload.data.message,
+        countError: action.payload.message,
       };
     });
 
@@ -159,7 +201,7 @@ const productSlice = createSlice({
         return {
           ...state,
           getOneLoading: 'failed',
-          getOneError: action.payload.data.message,
+          getOneError: action.payload.message,
         };
       }
 
@@ -173,7 +215,7 @@ const productSlice = createSlice({
       return {
         ...state,
         getOneLoading: 'failed',
-        getOneError: action.payload.data.message,
+        getOneError: action.payload.message,
       };
     });
 
@@ -185,10 +227,11 @@ const productSlice = createSlice({
     });
     builder.addCase(createProductAsyncThunk.fulfilled, (state: IProductState, action: PayloadAction<IDataProduct | any>) => {
       if (!action.payload.isSuccess) {
+        console.log(action.payload.message);
         return {
           ...state,
           postLoading: 'failed',
-          postError: action.payload.data.message,
+          postError: action.payload.message,
         };
       }
 
@@ -202,7 +245,7 @@ const productSlice = createSlice({
       return {
         ...state,
         postLoading: 'failed',
-        postError: action.payload.data.message,
+        postError: action.payload.message,
       };
     });
 
@@ -213,11 +256,12 @@ const productSlice = createSlice({
       };
     });
     builder.addCase(putProductAsyncThunk.fulfilled, (state: IProductState, action: PayloadAction<IDataProduct | any>) => {
+      console.log('🚀 ~ file: index.ts:250 ~ builder.addCase ~ action.payload', action.payload);
       if (!action.payload.isSuccess) {
         return {
           ...state,
           putLoading: 'failed',
-          putError: action.payload.data.message,
+          putError: action.payload.message,
         };
       }
       let id = action.payload.data.id;
@@ -232,7 +276,7 @@ const productSlice = createSlice({
       return {
         ...state,
         putLoading: 'failed',
-        putError: action.payload.data.message,
+        putError: action.payload.message,
       };
     });
 
@@ -247,7 +291,7 @@ const productSlice = createSlice({
         return {
           ...state,
           deleteLoading: 'failed',
-          deleteError: action.payload.data.message,
+          deleteError: action.payload.message,
         };
       }
 
@@ -264,13 +308,13 @@ const productSlice = createSlice({
       return {
         ...state,
         deleteLoading: 'failed',
-        deleteError: action.payload.data.message,
+        deleteError: action.payload.message,
       };
     });
   },
 });
 
-export { getAllProductAsyncThunk, getOneProductAsyncThunk, createProductAsyncThunk, putProductAsyncThunk, deleteProductAsyncThunk, countProductAsyncThunk };
+export { getAllProductAsyncThunk, getOneProductAsyncThunk, createProductAsyncThunk, putProductAsyncThunk, deleteProductAsyncThunk, countProductAsyncThunk, getAllProductPendingAsyncThunk };
 export const getProductState = (state: RootState) => state.productSlice;
-export const { resetProductState, setTitle } = productSlice.actions;
+export const { resetProductState, setTitle, setOneProduct, resetPostLoading, setDataOneProduct, resetPutLoading } = productSlice.actions;
 export default productSlice;

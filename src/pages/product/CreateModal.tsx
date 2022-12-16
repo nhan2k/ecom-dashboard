@@ -23,9 +23,10 @@ const CreateModal: React.FC<ICreateModal> = () => {
   const [openModalCreate, setOpenModalCreate] = React.useState(false);
   const handleOpenModalCreate = () => setOpenModalCreate(true);
   const handleCloseModalCreate = () => setOpenModalCreate(false);
+
   return (
-    <div>
-      <Button variant="outlined" startIcon={<AddIcon />} onClick={handleOpenModalCreate}>
+    <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '2rem 0.8rem 0 0' }}>
+      <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenModalCreate}>
         Create
       </Button>
       <Modal open={openModalCreate} onClose={handleCloseModalCreate} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">

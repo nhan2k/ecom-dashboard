@@ -56,7 +56,7 @@ const ProductReview: React.FunctionComponent<IProductReview> = () => {
       ) : (
         <React.Fragment />
       )}
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer style={{ maxHeight: '100vh', overflow: 'auto' }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>

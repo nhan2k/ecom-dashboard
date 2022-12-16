@@ -62,11 +62,11 @@ const createOrder = async (data: IDataOrder): Promise<IDataResponse> => {
   }
 };
 
-const putOrder = async (data: IDataOrder, id: number): Promise<IDataResponse> => {
+const putOrderItem = async (data: IDataOrder, id: number): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
-    const response = await privateHTTP.put(`/order/${id}`, data, {
+    const response = await privateHTTP.put(`/order-item/${id}`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -92,4 +92,4 @@ const deleteOrder = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-export { getAllOrder, getOneOrder, createOrder, putOrder, deleteOrder, countOrder };
+export { getAllOrder, getOneOrder, createOrder, putOrderItem, deleteOrder, countOrder };

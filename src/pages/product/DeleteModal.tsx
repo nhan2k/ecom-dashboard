@@ -44,9 +44,9 @@ const DeleteModal: React.FC<IDeleteModal> = ({ id }) => {
 
   return (
     <div>
-      <IconButton color="error" aria-label="Delete" size="large" onClick={handleOpenModalDelete}>
-        <DeleteForeverIcon />
-      </IconButton>
+      <Button color="error" variant="outlined" onClick={handleOpenModalDelete} startIcon={<DeleteForeverIcon />}>
+        Delete
+      </Button>
       <Modal open={openModalDelete} onClose={handleCloseModalDelete} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h4" component="h2">
@@ -60,9 +60,6 @@ const DeleteModal: React.FC<IDeleteModal> = ({ id }) => {
             <React.Fragment />
           )}
           <Stack direction="row" spacing={2} style={{ marginTop: '1.6rem' }}>
-            <Button fullWidth color="info" variant="outlined" startIcon={<CancelIcon />} onClick={() => handleCloseModalDelete()}>
-              Cancel
-            </Button>
             {deleteLoading === 'pending' ? (
               <Box sx={{ display: 'flex' }}>
                 <CircularProgress />
@@ -72,6 +69,9 @@ const DeleteModal: React.FC<IDeleteModal> = ({ id }) => {
                 Delete
               </Button>
             )}
+            <Button fullWidth color="info" variant="outlined" startIcon={<CancelIcon />} onClick={() => handleCloseModalDelete()}>
+              Cancel
+            </Button>
           </Stack>
         </Box>
       </Modal>

@@ -6,7 +6,21 @@ const getAllProduct = async (): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
-    const response = await privateHTTP.get('/product', {
+    const response = await privateHTTP.get('/product/vendor', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
+const getAllProductPending = async (): Promise<IDataResponse> => {
+  try {
+    const user = getItem('user');
+    const token = user !== null ? user.accessToken : '';
+    const response = await privateHTTP.get('/product/una', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -51,13 +65,17 @@ const createProduct = async (data: any): Promise<IDataResponse | any> => {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
     const formData = new FormData();
-    const { title, content, shop, type, quantity } = data;
+    const { title, image, quantity, price, category, meta } = data;
     formData.append('title', title);
-    formData.append('shop', shop);
-    formData.append('type', type);
+    if (meta.length > 0) {
+      formData.append('meta', JSON.stringify(meta));
+    }
     formData.append('quantity', quantity);
-    if (content.length > 0) {
-      formData.append('img', content[0], content[0].name);
+    formData.append('price', price);
+    formData.append('category', category);
+
+    if (image?.length > 0) {
+      formData.append('image', image[0], image[0].name);
     }
     const response = await privateHTTP.post('/product', formData, {
       headers: {
@@ -66,15 +84,34 @@ const createProduct = async (data: any): Promise<IDataResponse | any> => {
     });
     return response.data;
   } catch (error: any) {
-    return error.response;
+    return error.response.data.data;
   }
 };
 
-const putProduct = async (data: IDataProduct, id: number): Promise<IDataResponse> => {
+const putProduct = async (data: any, id: number): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
-    const response = await privateHTTP.put(`/product/${id}`, data, {
+    const formData = new FormData();
+    const { title, image, quantity, price, metaTitle } = data;
+    if (title) {
+      formData.append('title', title);
+    }
+    if (quantity) {
+      formData.append('quantity', quantity);
+    }
+    if (price) {
+      formData.append('price', price);
+    }
+    if (metaTitle) {
+      formData.append('metaTitle', metaTitle);
+    }
+
+    if (Array.isArray(image)) {
+      formData.append('image', image[0], image[0].name);
+    }
+
+    const response = await privateHTTP.put(`/product/${id}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -100,4 +137,4 @@ const deleteProduct = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-export { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct };
+export { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct, getAllProductPending };

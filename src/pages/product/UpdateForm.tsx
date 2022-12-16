@@ -3,17 +3,17 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Alert, Button, Grid, Stack, TextField } from '@mui/material';
+import { Alert, Autocomplete, Button, FormControl, FormControlLabel, FormLabel, Grid, InputAdornment, InputLabel, OutlinedInput, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { Box, CircularProgress } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
-import { getProductState, putProductAsyncThunk } from '@/features/redux/slices/product';
+import { getProductState, putProductAsyncThunk, resetPutLoading, setDataOneProduct } from '@/features/redux/slices/product';
 import { IDataProduct } from '@features/redux/slices/product/type';
 
 const theme = createTheme();
-type Inputs = {
-  title: string;
-};
+
+const imageMimeType = /image\/(png|jpg|jpeg)/i;
+
 interface IUpdateForm {
   id: number;
   handleCloseModalUpdate: any;
@@ -25,16 +25,71 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
     formState: { errors },
   } = useForm<IDataProduct>();
 
-  const { dataInput, putLoading, putError } = useAppSelector(getProductState);
+  const { putLoading, putError, dataGetOne } = useAppSelector(getProductState);
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<IDataProduct> = async (data) => {
-    data = { ...dataInput };
-    await dispatch(putProductAsyncThunk({ data, id }));
-    if (putLoading === 'succeeded') {
-      handleCloseModalUpdate();
-    }
+    const { title, quantity, metaTitle, price, shop } = dataGetOne;
+    let newData = { title, quantity, metaTitle, image, price, shop };
+    await dispatch(putProductAsyncThunk({ data: newData, id }));
+
+    return handleCloseModalUpdate();
   };
+  const [image, setImage] = React.useState(dataGetOne.image);
+
+  const options = [
+    {
+      label: 'Available',
+      value: 1,
+    },
+    {
+      label: 'Non-Available',
+      value: 0,
+    },
+  ];
+
+  if (putLoading === 'succeeded') {
+    handleCloseModalUpdate();
+    dispatch(resetPutLoading());
+  }
+
+  const [file, setFile] = React.useState(null);
+  const [fileDataURL, setFileDataURL] = React.useState(`${process.env.REACT_APP_API_PUBLIC_IMG}/${dataGetOne.image}`);
+
+  const changeHandler = (e: React.BaseSyntheticEvent) => {
+    setImage(e.target.files);
+    const file = e.target.files[0];
+    if (!file.type.match(imageMimeType)) {
+      alert('Image mime type is not valid');
+      return;
+    }
+    setFile(file);
+  };
+  React.useEffect(() => {
+    let fileReader: FileReader,
+      isCancel: boolean = false;
+    if (file) {
+      fileReader = new FileReader();
+      fileReader.onload = (e: any) => {
+        const { result } = e.target;
+        if (result && !isCancel) {
+          setFileDataURL(result);
+        }
+      };
+      fileReader.readAsDataURL(file);
+    }
+    return () => {
+      isCancel = true;
+      if (fileReader && fileReader.readyState === 1) {
+        fileReader.abort();
+      }
+    };
+  }, [file]);
+
+  const handleOnchange = (e: React.BaseSyntheticEvent) => {
+    dispatch(setDataOneProduct({ key: e.target.name, value: e.target.value }));
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xl" sx={{ mb: 4 }}>
@@ -45,26 +100,91 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
           <React.Fragment>
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    {...register('title', { required: 'Required' })}
+                    inputProps={{ style: { fontSize: '1.6rem', lineHeight: '2rem' } }}
+                    InputLabelProps={{ style: { fontSize: '1.6rem', lineHeight: '2rem' } }}
+                    FormHelperTextProps={{ style: { fontSize: '1.6rem', lineHeight: '2rem' } }}
+                    multiline
+                    value={dataGetOne.title}
+                    onChange={handleOnchange}
+                    error={errors.title ? true : false}
+                    id="outlined-error-helper-text"
+                    label="Title "
+                    placeholder="Enter Title"
+                    helperText={errors.title ? String(errors.title.message) : ''}
+                    variant="standard"
+                    fullWidth
+                  />
+                </Grid>
+
+                {/* <Grid item xs={6} sm={6}>
+                  <Autocomplete disablePortal id="combo-box-demo" {...register('shop')} options={options} onChange={(e, data) => data} value={options.filter((e) => e.value === dataGetOne.shop)[0]} renderInput={(params) => <TextField {...params} variant="standard" label="Publicly" />} fullWidth />
+                </Grid> */}
                 <Grid item xs={6} sm={6}>
-                  <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title " placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : 'Required'} fullWidth />
+                  <TextField
+                    {...register('quantity', {
+                      min: 0,
+                    })}
+                    type="number"
+                    variant="standard"
+                    value={dataGetOne.quantity}
+                    onChange={handleOnchange}
+                    error={errors.quantity ? true : false}
+                    id="outlined-error-helper-text"
+                    label="Quantity"
+                    placeholder="Enter Quantity"
+                    fullWidth
+                    inputProps={{ style: { fontSize: '1.6rem' } }}
+                    InputLabelProps={{ style: { fontSize: '1.6rem' } }}
+                    FormHelperTextProps={{ style: { fontSize: '1.6rem' } }}
+                    helperText={errors.quantity ? String(errors.quantity.message) : ''}
+                  />
                 </Grid>
                 <Grid item xs={6} sm={6}>
-                  <TextField {...register('type')} type="number" variant="filled" error={errors.type ? true : false} id="outlined-error-helper-text" label="Type" placeholder="Enter Type" helperText={errors.type ? String(errors.type.message) : ''} fullWidth />
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="outlined-adornment-product-price">Product Price</InputLabel>
+                    <OutlinedInput
+                      {...register('price')}
+                      inputProps={{ style: { fontSize: '1.6rem' } }}
+                      id="outlined-adornment-product-price"
+                      value={dataGetOne.price || ''}
+                      onChange={handleOnchange}
+                      startAdornment={<InputAdornment position="start">$</InputAdornment>}
+                      label="Product Price"
+                      error={errors.title ? true : false}
+                      fullWidth
+                    />
+                  </FormControl>
                 </Grid>
-                <Grid item xs={6} sm={6}>
-                  <TextField {...register('quantity')} type="number" variant="filled" error={errors.quantity ? true : false} id="outlined-error-helper-text" label="Quantity" placeholder="Enter Quantity" helperText={errors.quantity ? String(errors.quantity.message) : ''} fullWidth />
+                <Grid item xs={12} sm={12}>
+                  <TextField
+                    {...register('metaTitle')}
+                    value={dataGetOne.metaTitle || ''}
+                    onChange={handleOnchange}
+                    error={errors.metaTitle ? true : false}
+                    variant="standard"
+                    inputProps={{ style: { fontSize: '1.6rem' } }}
+                    InputLabelProps={{ style: { fontSize: '1.6rem' } }}
+                    FormHelperTextProps={{ style: { fontSize: '1.6rem' } }}
+                    id="outlined-error-helper-text"
+                    label="Meta Data "
+                    placeholder="Enter Meta Data"
+                    helperText={errors.metaTitle ? String(errors.metaTitle.message) : ''}
+                    fullWidth
+                  />
                 </Grid>
-                <Grid item xs={6} sm={6}>
-                  <TextField {...register('shop')} type="number" variant="filled" error={errors.title ? true : false} id="outlined-error-helper-text" label="Shop" placeholder="Enter shop" helperText={errors.shop ? String(errors.shop.message) : ''} fullWidth />
-                </Grid>
+
                 <Grid item xs={12} sm={12}>
                   <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
                     <Typography variant="h4">Choose Image</Typography>
                     <Button variant="contained" component="label" size="large">
                       Upload
-                      <input hidden accept="image/*" multiple type="file" {...register('content')} />
+                      <input hidden accept=".png, .jpg, .jpeg" multiple type="file" {...register('image')} onChange={changeHandler} />
                     </Button>
                   </Stack>
+                  {fileDataURL ? <p style={{ display: 'flex', justifyContent: 'center' }}>{<img src={fileDataURL} alt="preview" style={{ maxWidth: '20rem' }} />}</p> : null}
                 </Grid>
                 <Grid item xs={12}>
                   {putLoading === 'failed' ? (

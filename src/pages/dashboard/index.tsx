@@ -34,9 +34,9 @@ const Dashboard: React.FunctionComponent<IDashboard> = () => {
   }, []);
 
   let states = [
-    { state: productState, img: productImg },
-    { state: orderState, img: orderImg },
-    { state: transactionState, img: transactionImg },
+    { state: productState, img: productImg, name: 'Product' },
+    { state: orderState, img: orderImg, name: 'Order' },
+    // { state: transactionState, img: transactionImg, name: 'Transaction' },
   ];
 
   return (
@@ -62,7 +62,7 @@ const Dashboard: React.FunctionComponent<IDashboard> = () => {
                         {element.state.countLoading === 'succeeded' ? element.state.count : ''}
                       </Typography>
                       <Typography gutterBottom variant="h5" component="div">
-                        Product Quantity Report
+                        {element.name} Quantity Report
                       </Typography>
                     </CardContent>
                   </CardActionArea>

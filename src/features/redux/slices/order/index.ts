@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IOrderState, IDataOrder } from './type';
 import { RootState } from '@features/redux/store';
-import { getAllOrder, getOneOrder, createOrder, putOrder, deleteOrder, countOrder } from './order.service';
+import { getAllOrder, getOneOrder, createOrder, putOrderItem, deleteOrder, countOrder } from './order.service';
 
 const prefixType = 'Order';
 const getAllOrderAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
@@ -36,9 +36,9 @@ const createOrderAsyncThunk = createAsyncThunk(`${prefixType}/create`, async (da
     return thunkAPI.rejectWithValue(error);
   }
 });
-const putOrderAsyncThunk = createAsyncThunk(`${prefixType}/put`, async ({ data, id }: { data: IDataOrder; id: number }, thunkAPI) => {
+const putOrderAsyncThunk = createAsyncThunk(`${prefixType}/put`, async ({ data, id }: { data: any; id: number }, thunkAPI) => {
   try {
-    const dataResponse = await putOrder(data, id);
+    const dataResponse = await putOrderItem(data, id);
     return dataResponse;
   } catch (error: any) {
     return thunkAPI.rejectWithValue(error);
@@ -98,6 +98,16 @@ const OrderSlice = createSlice({
           ...state.dataInput,
           token: action.payload,
         },
+      };
+    },
+    setOneOrder: (state, action: PayloadAction<number>) => {
+      const id = action.payload;
+      const data: any = state.dataGetAll.filter((e) => {
+        return e.id === id;
+      });
+      return {
+        ...state,
+        dataGetOne: data[0],
       };
     },
   },
@@ -218,35 +228,35 @@ const OrderSlice = createSlice({
       };
     });
 
-    builder.addCase(putOrderAsyncThunk.pending, (state: IOrderState) => {
-      return {
-        ...state,
-        putLoading: 'pending',
-      };
-    });
-    builder.addCase(putOrderAsyncThunk.fulfilled, (state: IOrderState, action: PayloadAction<IDataOrder | any>) => {
-      if (!action.payload.isSuccess) {
-        return {
-          ...state,
-          putLoading: 'failed',
-          putError: action.payload.data.message,
-        };
-      }
-      let id = action.payload.data.id;
+    // builder.addCase(putOrderAsyncThunk.pending, (state: IOrderState) => {
+    //   return {
+    //     ...state,
+    //     putLoading: 'pending',
+    //   };
+    // });
+    // builder.addCase(putOrderAsyncThunk.fulfilled, (state: IOrderState, action: PayloadAction<IDataOrder | any>) => {
+    //   if (!action.payload.isSuccess) {
+    //     return {
+    //       ...state,
+    //       putLoading: 'failed',
+    //       putError: action.payload.data.message,
+    //     };
+    //   }
+    //   let id = action.payload.data.id;
 
-      return {
-        ...state,
-        putLoading: 'succeeded',
-        dataGetAll: state.dataGetAll.map((element: IDataOrder) => (element.id === id ? action.payload.data : element)),
-      };
-    });
-    builder.addCase(putOrderAsyncThunk.rejected, (state: IOrderState, action: PayloadAction<any>) => {
-      return {
-        ...state,
-        putLoading: 'failed',
-        putError: action.payload.data.message,
-      };
-    });
+    //   return {
+    //     ...state,
+    //     putLoading: 'succeeded',
+    //     dataGetAll: state.dataGetAll.map((element: IDataOrder) => (element.id === id ? action.payload.data : element)),
+    //   };
+    // });
+    // builder.addCase(putOrderAsyncThunk.rejected, (state: IOrderState, action: PayloadAction<any>) => {
+    //   return {
+    //     ...state,
+    //     putLoading: 'failed',
+    //     putError: action.payload.data.message,
+    //   };
+    // });
 
     builder.addCase(deleteOrderAsyncThunk.pending, (state: IOrderState) => {
       return {
@@ -284,5 +294,5 @@ const OrderSlice = createSlice({
 
 export { getAllOrderAsyncThunk, getOneOrderAsyncThunk, createOrderAsyncThunk, putOrderAsyncThunk, deleteOrderAsyncThunk, countOrderAsyncThunk };
 export const getOrderState = (state: RootState) => state.OrderSlice;
-export const { resetOrderState, setSessionId, setToken } = OrderSlice.actions;
+export const { resetOrderState, setSessionId, setToken, setOneOrder } = OrderSlice.actions;
 export default OrderSlice;
