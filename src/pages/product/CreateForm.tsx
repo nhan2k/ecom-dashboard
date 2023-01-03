@@ -5,12 +5,11 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
-import { Alert, Autocomplete, Box, Button, CircularProgress, FormControl, Input, InputAdornment, InputLabel, Stack } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, FormControl, Input, InputAdornment, InputLabel, Stack } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
 import { createProductAsyncThunk, getProductState, resetPostLoading } from '@/features/redux/slices/product';
 import { IDataProduct } from '@features/redux/slices/product/type';
-import { getCategoryState } from '@/features/redux/slices/category';
 import CreatableSelect from 'react-select/creatable';
 import { keys, contents } from './attribute';
 
@@ -28,7 +27,6 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
   } = useForm<IDataProduct>();
 
   const { postLoading, postError } = useAppSelector(getProductState);
-  const categoryState = useAppSelector(getCategoryState);
 
   const dispatch = useAppDispatch();
   const [image, setImage] = React.useState(null);
@@ -71,18 +69,6 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
     };
   }, [file]);
 
-  const optionsCategory =
-    categoryState.getAllLoading === 'succeeded'
-      ? categoryState.dataGetAll.map((e: any) => {
-          return {
-            label: e.title,
-            value: e.id,
-          };
-        })
-      : [];
-
-  const [cat, setCat] = React.useState(optionsCategory[0].value);
-
   const [attributes1, setattributes1] = React.useState<string | undefined>();
   const [attributes2, setattributes2] = React.useState<string | undefined>();
   const [attributes3, setattributes3] = React.useState<string | undefined>();
@@ -93,7 +79,6 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
 
   const onSubmit: SubmitHandler<IDataProduct> = async (data) => {
     data.image = image;
-    data.category = cat;
     data.meta = [
       {
         key: String(attributes1),
@@ -161,9 +146,6 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
                     <InputLabel htmlFor="outlined-adornment-product-price">Product Price</InputLabel>
                     <Input {...register('price', { min: 0 })} id="standard-adornment-amount" type="number" startAdornment={<InputAdornment position="start">$</InputAdornment>} error={errors.price ? true : false} fullWidth inputProps={{ style: { fontSize: '1.6rem' } }} defaultValue="0" />
                   </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <Autocomplete disablePortal id="combo-box-demo" options={optionsCategory} defaultValue={optionsCategory[0]} onChange={(e, value) => setCat(value.value)} renderInput={(params) => <TextField {...params} variant="standard" label="Category" />} fullWidth />
                 </Grid>
                 <Grid item xs={6} sm={6}>
                   <p>Attribute</p>

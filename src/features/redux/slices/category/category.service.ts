@@ -37,10 +37,14 @@ const createCategory = async (data: IDataCategory): Promise<IDataResponse> => {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
     const formData = new FormData();
-    const { title, content } = data;
+    const { title, parentId, image } = data;
+
     formData.append('title', String(title));
-    if (content) {
-      formData.append('img', content[0], content[0].name);
+    if (image && image.length > 0) {
+      formData.append('image', image[0], image[0].name);
+    }
+    if (parentId) {
+      formData.append('parentId', String(parentId));
     }
     const response = await privateHTTP.post('/category', formData, {
       headers: {
@@ -53,16 +57,16 @@ const createCategory = async (data: IDataCategory): Promise<IDataResponse> => {
   }
 };
 
-const putCategory = async (data: any, id: number): Promise<IDataResponse> => {
+const putCategory = async (data: IDataCategory, id: number): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
     const formData = new FormData();
-    const { title, content, metaTitle } = data;
+    const { title, image } = data;
+    console.log('🚀 ~ file: category.service.ts:66 ~ putCategory ~ image', image);
     formData.append('title', String(title));
-    formData.append('metaTitle', String(metaTitle));
-    if (content && content.length > 0) {
-      formData.append('img', content[0], content[0].name);
+    if (image && image.length > 0) {
+      formData.append('image', image[0], image[0].name);
     }
     const response = await privateHTTP.put(`/category/${id}`, formData, {
       headers: {

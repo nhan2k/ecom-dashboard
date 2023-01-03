@@ -14,18 +14,10 @@ import ApproveModal from './ApproveModal';
 interface IOrder {}
 
 type DataRow = {
-  price: number;
-  discount: number;
-  fullName: string;
-  quantity: number;
-  status: number;
-  OrderModel: {
-    fullName: string;
-    address: string;
-    sessionId: string;
-    status: number;
-  };
   id: number;
+  email: string;
+  total: number;
+  status: number;
   createdAt: string;
   updatedAt: string;
 };
@@ -35,25 +27,20 @@ const columns: TableColumn<DataRow>[] = [
     selector: (row) => row.id,
   },
   {
-    name: 'Price',
-    selector: (row) => `$${row.price}`,
-    maxWidth: '0.5rem',
-  },
-  {
-    name: 'Discount',
-    selector: (row) => `$${row.discount}`,
-    maxWidth: '0.5rem',
-  },
-  {
-    name: 'Quantity',
-    selector: (row) => row.quantity,
-    maxWidth: '0.5rem',
+    name: 'Total',
+    selector: (row) => `$${row.total}`,
   },
   {
     name: 'Status',
     selector: (row) => String(statusMap.get(row.status)),
     maxWidth: '0.5rem',
   },
+  {
+    name: 'Buyer',
+    selector: (row) => row.email,
+    maxWidth: '0.5rem',
+  },
+
   {
     name: 'Created At',
     selector: (row) => new Date(row.createdAt).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', day: 'numeric', month: 'numeric' }),

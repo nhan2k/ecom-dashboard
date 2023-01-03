@@ -11,7 +11,6 @@ interface NavItemsInterface {
   label: string;
   link: string;
   divider?: boolean;
-  roleNav: Array<TRole>;
 }
 
 interface MiniDrawerInterface {

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IProductState, IDataProduct } from './type';
 import { RootState } from '@features/redux/store';
-import { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct, getAllProductPending } from './product.service';
+import { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct, getAllProductPending, putShopProduct } from './product.service';
 
 const prefixType = 'product';
 const getAllProductAsyncThunk = createAsyncThunk(`${prefixType}/getAll`, async (_, thunkAPI) => {
@@ -54,6 +54,15 @@ const putProductAsyncThunk = createAsyncThunk(`${prefixType}/put`, async ({ data
     return thunkAPI.rejectWithValue(error);
   }
 });
+const putProductShopAsyncThunk = createAsyncThunk(`${prefixType}/putShop`, async (id: number, thunkAPI) => {
+  try {
+    const dataResponse = await putShopProduct(id);
+    return dataResponse;
+  } catch (error: any) {
+    return thunkAPI.rejectWithValue(error);
+  }
+});
+
 const deleteProductAsyncThunk = createAsyncThunk(`${prefixType}/delete`, async (id: number, thunkAPI) => {
   try {
     const dataResponse = await deleteProduct(id);
@@ -108,7 +117,7 @@ const productSlice = createSlice({
         dataGetOne: data[0],
       };
     },
-    setDataOneProduct: (state, action: PayloadAction<{ key: string; value: string }>) => {
+    setDataOneProduct: (state, action: PayloadAction<{ key: string; value: string | number }>) => {
       return {
         ...state,
         dataGetOne: {
@@ -256,7 +265,6 @@ const productSlice = createSlice({
       };
     });
     builder.addCase(putProductAsyncThunk.fulfilled, (state: IProductState, action: PayloadAction<IDataProduct | any>) => {
-      console.log('🚀 ~ file: index.ts:250 ~ builder.addCase ~ action.payload', action.payload);
       if (!action.payload.isSuccess) {
         return {
           ...state,
@@ -311,10 +319,40 @@ const productSlice = createSlice({
         deleteError: action.payload.message,
       };
     });
+
+    builder.addCase(putProductShopAsyncThunk.pending, (state: IProductState) => {
+      return {
+        ...state,
+        putLoading: 'pending',
+      };
+    });
+    builder.addCase(putProductShopAsyncThunk.fulfilled, (state: IProductState, action: PayloadAction<IDataProduct | any>) => {
+      if (!action.payload.isSuccess) {
+        return {
+          ...state,
+          putLoading: 'failed',
+          putError: action.payload.message,
+        };
+      }
+      let id = action.payload.data.id;
+
+      return {
+        ...state,
+        putLoading: 'succeeded',
+        dataGetAll: state.dataGetAll.map((element: IDataProduct) => (element.id === id ? action.payload.data : element)),
+      };
+    });
+    builder.addCase(putProductShopAsyncThunk.rejected, (state: IProductState, action: PayloadAction<any>) => {
+      return {
+        ...state,
+        putLoading: 'failed',
+        putError: action.payload.message,
+      };
+    });
   },
 });
 
-export { getAllProductAsyncThunk, getOneProductAsyncThunk, createProductAsyncThunk, putProductAsyncThunk, deleteProductAsyncThunk, countProductAsyncThunk, getAllProductPendingAsyncThunk };
+export { getAllProductAsyncThunk, getOneProductAsyncThunk, createProductAsyncThunk, putProductAsyncThunk, deleteProductAsyncThunk, countProductAsyncThunk, getAllProductPendingAsyncThunk, putProductShopAsyncThunk };
 export const getProductState = (state: RootState) => state.productSlice;
 export const { resetProductState, setTitle, setOneProduct, resetPostLoading, setDataOneProduct, resetPutLoading } = productSlice.actions;
 export default productSlice;

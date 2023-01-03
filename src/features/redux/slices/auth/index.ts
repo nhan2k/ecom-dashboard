@@ -42,7 +42,6 @@ const initialState: IAuthState = {
   loadingSignup: 'idle',
   errorSignup: '',
   auth: getItem('user') !== null ? true : false,
-  role: getItem('user') !== null ? getItem('user').role : 'VENDOR',
 };
 
 const authSlice = createSlice({

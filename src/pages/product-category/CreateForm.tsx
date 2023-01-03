@@ -9,6 +9,7 @@ import { Alert, Box, Button, CircularProgress, Stack } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
 import { createProductCategoryAsyncThunk, getProductCategoryState, setCategoryId, setProductId } from '@/features/redux/slices/product-category';
+import Select from 'react-select';
 
 const theme = createTheme();
 type Inputs = {
@@ -26,7 +27,7 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
     formState: { errors },
   } = useForm<Inputs>();
 
-  const { dataInput, postLoading, postError } = useAppSelector(getProductCategoryState);
+  const { dataInput, postLoading, postError, dataGetAll } = useAppSelector(getProductCategoryState);
   const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
@@ -35,6 +36,22 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
       handleCloseModalCreate();
     }
   };
+
+  const products =
+    dataGetAll.allProduct.map((e: any) => {
+      return {
+        label: e.title,
+        value: e.id,
+      };
+    }) || [];
+
+  const categories =
+    dataGetAll.allCategory.map((e: any) => {
+      return {
+        label: e.title,
+        value: e.id,
+      };
+    }) || [];
 
   return (
     <ThemeProvider theme={theme}>
@@ -47,30 +64,10 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('productId', { required: 'Required' })}
-                    error={errors.productId ? true : false}
-                    id="outlined-error-helper-text"
-                    label="product Id"
-                    placeholder="Enter product Id"
-                    helperText={errors.productId ? String(errors.productId.message) : ''}
-                    fullWidth
-                    value={dataInput.productId}
-                    onChange={(e: React.BaseSyntheticEvent) => dispatch(setProductId(e.target.value))}
-                  />
+                  <Select className="basic-single" classNamePrefix="select" options={products} {...register('productId')} />
                 </Grid>
                 <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('categoryId', { required: 'Required' })}
-                    error={errors.categoryId ? true : false}
-                    id="outlined-error-helper-text"
-                    label="category Id"
-                    placeholder="Enter categoryId"
-                    helperText={errors.categoryId ? String(errors.categoryId.message) : ''}
-                    fullWidth
-                    value={dataInput.categoryId}
-                    onChange={(e: React.BaseSyntheticEvent) => dispatch(setCategoryId(e.target.value))}
-                  />
+                  <Select className="basic-single" classNamePrefix="select" name="color" options={categories} />
                 </Grid>
                 <Grid item xs={12}>
                   {postLoading === 'failed' ? (

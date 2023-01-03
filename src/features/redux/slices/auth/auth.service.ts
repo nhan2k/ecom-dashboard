@@ -4,7 +4,7 @@ import { IDataResponse } from '@features/utils/axios';
 
 const signup = async (data: IDataSignup): Promise<IDataResponse> => {
   try {
-    const response = await publicHTTP.post('/signup/vendor', data);
+    const response = await publicHTTP.post('/signup/admin', data);
     return response.data;
   } catch (error: any) {
     return error.response.data;
@@ -13,7 +13,7 @@ const signup = async (data: IDataSignup): Promise<IDataResponse> => {
 
 const signin = async (data: IDataSignin): Promise<IDataResponse> => {
   try {
-    const response = await publicHTTP.post('/api/v1/vendor', data);
+    const response = await publicHTTP.post('/api/v1/admin', data);
     return response.data;
   } catch (error: any) {
     return error.response.data;

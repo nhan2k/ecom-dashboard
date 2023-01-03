@@ -2,21 +2,16 @@ import * as React from 'react';
 import { useAppSelector } from '../hooks/reduxHooks';
 import { getAuthState } from '@features/redux/slices/auth';
 import { Navigate } from 'react-router-dom';
-import { TRole } from '@features/navigation/drawer/mini-drawer/type';
 
 interface IProtectedRouteProps {
   children: JSX.Element;
-  roleRoutes: TRole[];
 }
 
-const ProtectedRoute: React.FunctionComponent<IProtectedRouteProps> = ({ children, roleRoutes }) => {
-  const { auth, role } = useAppSelector(getAuthState);
+const ProtectedRoute: React.FunctionComponent<IProtectedRouteProps> = ({ children }) => {
+  const { auth } = useAppSelector(getAuthState);
 
   if (!auth) {
     return <Navigate to="/signin" />;
-  }
-  if (!roleRoutes.includes(role)) {
-    return <Navigate to="/404" />;
   }
 
   return children;

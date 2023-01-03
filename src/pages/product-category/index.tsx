@@ -23,7 +23,7 @@ const ProductCategoryCategory: React.FunctionComponent<IProductCategoryCategory>
   const dispatch = useAppDispatch();
   const { dataGetAll, getAllLoading } = useAppSelector(getProductCategoryState);
 
-  React.useMemo(() => {
+  React.useEffect(() => {
     dispatch(getAllProductCategoryAsyncThunk());
   }, []);
   const [page, setPage] = React.useState(0);

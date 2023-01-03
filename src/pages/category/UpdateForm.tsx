@@ -41,11 +41,8 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
   };
 
   const onSubmit: SubmitHandler<IDataCategory> = async (data) => {
-    data = { ...dataInput };
+    data = { ...data, ...dataInput };
     await dispatch(putCategoryAsyncThunk({ data, id }));
-    if (putLoading === 'succeeded') {
-      handleCloseModalUpdate();
-    }
   };
 
   return (
@@ -59,37 +56,14 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
                 <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('title', { required: 'Required' })}
-                    onChange={handleOnchange}
-                    value={dataInput.title}
-                    error={errors.title ? true : false}
-                    id="outlined-error-helper-text"
-                    label="Title"
-                    placeholder="Enter Title"
-                    helperText={errors.title ? String(errors.title.message) : ''}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12}>
-                  <TextField
-                    {...register('metaTitle')}
-                    value={dataInput.metaTitle}
-                    onChange={handleOnchange}
-                    error={errors.metaTitle ? true : false}
-                    id="outlined-error-helper-text"
-                    label="Meta Title"
-                    placeholder="Enter Meta Title"
-                    helperText={errors.title ? String(errors.title.message) : ''}
-                    fullWidth
-                  />
+                  <TextField {...register('title')} onChange={handleOnchange} value={dataInput.title} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title" placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
                     <Typography variant="h4">Choose Image</Typography>
                     <Button variant="contained" component="label" size="large">
                       Upload
-                      <input hidden accept="image/*" multiple type="file" {...register('content')} />
+                      <input hidden accept=".png, .jpg, .jpeg" multiple type="file" {...register('image')} />
                     </Button>
                   </Stack>
                 </Grid>

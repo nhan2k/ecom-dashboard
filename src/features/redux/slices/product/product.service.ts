@@ -1,12 +1,13 @@
 import { privateHTTP, IDataResponse } from '@features/utils/axios';
 import { getItem } from '@features/utils/local.storage';
 import { IDataProduct } from './type';
+import { shop } from './enum';
 
 const getAllProduct = async (): Promise<IDataResponse> => {
   try {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
-    const response = await privateHTTP.get('/product/vendor', {
+    const response = await privateHTTP.get('/product/admin', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -93,7 +94,7 @@ const putProduct = async (data: any, id: number): Promise<IDataResponse> => {
     const user = getItem('user');
     const token = user !== null ? user.accessToken : '';
     const formData = new FormData();
-    const { title, image, quantity, price, metaTitle } = data;
+    const { title, image, quantity, price, metaTitle, shop } = data;
     if (title) {
       formData.append('title', title);
     }
@@ -107,7 +108,9 @@ const putProduct = async (data: any, id: number): Promise<IDataResponse> => {
       formData.append('metaTitle', metaTitle);
     }
 
-    if (Array.isArray(image)) {
+    formData.append('shop', shop);
+
+    if (image?.length > 0) {
       formData.append('image', image[0], image[0].name);
     }
 
@@ -116,6 +119,26 @@ const putProduct = async (data: any, id: number): Promise<IDataResponse> => {
         Authorization: `Bearer ${token}`,
       },
     });
+    return response.data;
+  } catch (error: any) {
+    return error.response.data;
+  }
+};
+
+const putShopProduct = async (id: number): Promise<IDataResponse> => {
+  try {
+    const user = getItem('user');
+    const token = user !== null ? user.accessToken : '';
+
+    const response = await privateHTTP.put(
+      `/product/shop/${id}`,
+      { shop: shop.available },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error: any) {
     return error.response.data;
@@ -137,4 +160,4 @@ const deleteProduct = async (id: number): Promise<IDataResponse> => {
   }
 };
 
-export { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct, getAllProductPending };
+export { getAllProduct, getOneProduct, createProduct, putProduct, deleteProduct, countProduct, getAllProductPending, putShopProduct };

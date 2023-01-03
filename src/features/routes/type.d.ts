@@ -5,7 +5,6 @@ interface IRoutes {
   component: FC<any>;
   layout?: FC<any>;
   isPublic: boolean;
-  roleRoutes?: Array<TRole>;
 }
 
 export { IRoutes };

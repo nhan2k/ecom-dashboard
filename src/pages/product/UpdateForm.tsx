@@ -3,12 +3,13 @@ import Container from '@mui/material/Container';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Alert, Autocomplete, Button, FormControl, FormControlLabel, FormLabel, Grid, InputAdornment, InputLabel, OutlinedInput, Radio, RadioGroup, Stack, TextField } from '@mui/material';
+import { Alert, Autocomplete, Button, FormControl, Grid, InputAdornment, InputLabel, OutlinedInput, Stack, TextField } from '@mui/material';
 import { Box, CircularProgress } from '@mui/material';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAppDispatch, useAppSelector } from '@/features/hooks/reduxHooks';
 import { getProductState, putProductAsyncThunk, resetPutLoading, setDataOneProduct } from '@/features/redux/slices/product';
 import { IDataProduct } from '@features/redux/slices/product/type';
+import { shopMap, shop } from '@features/redux/slices/product/enum';
 
 const theme = createTheme();
 
@@ -28,25 +29,7 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
   const { putLoading, putError, dataGetOne } = useAppSelector(getProductState);
   const dispatch = useAppDispatch();
 
-  const onSubmit: SubmitHandler<IDataProduct> = async (data) => {
-    const { title, quantity, metaTitle, price, shop } = dataGetOne;
-    let newData = { title, quantity, metaTitle, image, price, shop };
-    await dispatch(putProductAsyncThunk({ data: newData, id }));
-
-    return handleCloseModalUpdate();
-  };
-  const [image, setImage] = React.useState(dataGetOne.image);
-
-  const options = [
-    {
-      label: 'Available',
-      value: 1,
-    },
-    {
-      label: 'Non-Available',
-      value: 0,
-    },
-  ];
+  const [image, setImage] = React.useState(dataGetOne.content);
 
   if (putLoading === 'succeeded') {
     handleCloseModalUpdate();
@@ -54,9 +37,13 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
   }
 
   const [file, setFile] = React.useState(null);
-  const [fileDataURL, setFileDataURL] = React.useState(`${process.env.REACT_APP_API_PUBLIC_IMG}/${dataGetOne.image}`);
+  const [fileDataURL, setFileDataURL] = React.useState(`${process.env.REACT_APP_API_PUBLIC_IMG}/${dataGetOne.content}`);
+
+  const imageInput = register('image');
+  const shopCBBox = register('shop');
 
   const changeHandler = (e: React.BaseSyntheticEvent) => {
+    imageInput.onChange(e);
     setImage(e.target.files);
     const file = e.target.files[0];
     if (!file.type.match(imageMimeType)) {
@@ -86,9 +73,26 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
     };
   }, [file]);
 
+  const onSubmit: SubmitHandler<IDataProduct> = async (data) => {
+    const { title, quantity, metaTitle, price, shop } = dataGetOne;
+    let newData = { title, quantity, metaTitle, image, price, ...data, shop };
+    await dispatch(putProductAsyncThunk({ data: newData, id }));
+  };
+
   const handleOnchange = (e: React.BaseSyntheticEvent) => {
     dispatch(setDataOneProduct({ key: e.target.name, value: e.target.value }));
   };
+
+  const options = [
+    {
+      value: shop.unavailable,
+      label: shopMap.get(shop.unavailable),
+    },
+    {
+      value: shop.available,
+      label: shopMap.get(shop.available),
+    },
+  ];
 
   return (
     <ThemeProvider theme={theme}>
@@ -119,9 +123,17 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
                   />
                 </Grid>
 
-                {/* <Grid item xs={6} sm={6}>
-                  <Autocomplete disablePortal id="combo-box-demo" {...register('shop')} options={options} onChange={(e, data) => data} value={options.filter((e) => e.value === dataGetOne.shop)[0]} renderInput={(params) => <TextField {...params} variant="standard" label="Publicly" />} fullWidth />
-                </Grid> */}
+                <Grid item xs={6} sm={6}>
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    onChange={(e, data) => dispatch(setDataOneProduct({ key: 'shop', value: Number(data?.value) }))}
+                    options={options}
+                    defaultValue={options.filter((e) => e.value === dataGetOne.shop)[0]}
+                    renderInput={(params) => <TextField {...params} variant="standard" label="Publicly" />}
+                    fullWidth
+                  />
+                </Grid>
                 <Grid item xs={6} sm={6}>
                   <TextField
                     {...register('quantity', {
@@ -181,7 +193,7 @@ const UpdateForm: React.FC<IUpdateForm> = ({ id, handleCloseModalUpdate }) => {
                     <Typography variant="h4">Choose Image</Typography>
                     <Button variant="contained" component="label" size="large">
                       Upload
-                      <input hidden accept=".png, .jpg, .jpeg" multiple type="file" {...register('image')} onChange={changeHandler} />
+                      <input hidden accept=".png, .jpg, .jpeg" multiple type="file" {...imageInput} onChange={changeHandler} />
                     </Button>
                   </Stack>
                   {fileDataURL ? <p style={{ display: 'flex', justifyContent: 'center' }}>{<img src={fileDataURL} alt="preview" style={{ maxWidth: '20rem' }} />}</p> : null}

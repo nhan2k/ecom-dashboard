@@ -16,7 +16,7 @@ type TLoading = 'idle' | 'pending' | 'succeeded' | 'failed';
 
 interface IProductCategoryState {
   dataInput: IDataInput;
-  dataGetAll: IDataProductCategory[];
+  dataGetAll: any;
   dataGetOne: IDataProductCategory;
   getAllLoading: TLoading;
   getOneLoading: TLoading;

@@ -15,7 +15,7 @@ type DataRow = {
   publishedAt: string;
   startsAt: string;
   endsAt: string;
-  image: string;
+  content: string;
   CategoryModels: {
     title: string;
   };
@@ -39,7 +39,7 @@ const columns: TableColumn<DataRow>[] = [
     cell: (row) => <p style={{ overflowWrap: 'break-word' }}>{row.title}</p>,
   },
   {
-    cell: (row) => <img src={`${process.env.REACT_APP_API_PUBLIC_IMG}/${row.image}`} style={{ maxWidth: '5rem' }} />,
+    cell: (row) => <img src={`${process.env.REACT_APP_API_PUBLIC_IMG}/${row.content}`} style={{ maxWidth: '5rem' }} />,
   },
   {
     name: 'Price',

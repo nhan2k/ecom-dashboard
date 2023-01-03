@@ -118,22 +118,6 @@ export default function SignIn() {
                 Sign In
               </Button>
             )}
-            <Grid container>
-              <Grid item xs>
-                <Link to={'/reset'}>
-                  <Typography variant={'body1'} color={'blue'}>
-                    Forgot password?
-                  </Typography>
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link to={'/signup'}>
-                  <Typography variant={'body1'} color={'blue'}>
-                    Don't have an account? Sign Up
-                  </Typography>
-                </Link>
-              </Grid>
-            </Grid>
           </Box>
         </Box>
       </Container>

@@ -1,6 +1,7 @@
 import { TableColumn } from 'react-data-table-component/dist/src/DataTable/types';
 import DetailModal from './Detail';
 import { shopMap } from '@features/redux/slices/product/enum';
+import ApproveModal from './ApproveModal';
 
 type DataRow = {
   title: number;
@@ -61,6 +62,10 @@ const columns: TableColumn<DataRow>[] = [
   {
     button: true,
     cell: (row) => <DetailModal id={row.id} />,
+  },
+  {
+    button: true,
+    cell: (row) => <ApproveModal id={row.id} />,
   },
 ];
 

@@ -4,7 +4,7 @@ interface IDataCategory {
   title?: string;
   metaTitle?: string;
   slug?: string;
-  content?: FileList;
+  image?: FileList;
   createdAt?: Date;
   updatedAt?: Date;
   deletedAt?: Date;

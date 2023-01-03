@@ -11,7 +11,7 @@ const App: React.FunctionComponent<AppInterface> = () => {
   return (
     <Router>
       <Routes>
-        {publicRoutes.map(({ component, path, layout, roleRoutes, isPublic }, index: number) => {
+        {publicRoutes.map(({ component, path, layout, isPublic }, index: number) => {
           let Page = component;
           let Layout = DefaultLayout;
 
@@ -35,14 +35,13 @@ const App: React.FunctionComponent<AppInterface> = () => {
             );
           }
 
-          let newRoleRoutes = roleRoutes || ['VENDOR'];
           return (
             <Route
               key={index}
               path={path}
               element={
                 <Layout>
-                  <ProtectedRoute roleRoutes={newRoleRoutes}>
+                  <ProtectedRoute>
                     <Page />
                   </ProtectedRoute>
                 </Layout>

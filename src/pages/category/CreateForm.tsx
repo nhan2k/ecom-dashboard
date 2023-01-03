@@ -28,9 +28,6 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
 
   const onSubmit: SubmitHandler<IDataCategory> = async (data) => {
     await dispatch(createCategoryAsyncThunk(data));
-    if (postLoading === 'succeeded') {
-      handleCloseModalCreate();
-    }
   };
 
   const options =
@@ -54,20 +51,20 @@ const CreateForm: React.FC<ICreateForm> = ({ handleCloseModalCreate }) => {
             <Box component="form" onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={3}>
                 <Grid item xs={6} sm={6}>
-                  <Autocomplete disablePortal options={options} renderInput={(params) => <TextField {...params} label="Parent Title" fullWidth />} fullWidth />
-                </Grid>
-                <Grid item xs={6} sm={6}>
                   <TextField {...register('title', { required: 'Required' })} error={errors.title ? true : false} id="outlined-error-helper-text" label="Title" placeholder="Enter Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
                 </Grid>
-                <Grid item xs={12} sm={12}>
+                {/* <Grid item xs={6} sm={6}>
+                  <Autocomplete {...register('parentId')} disablePortal options={options} renderInput={(params) => <TextField {...params} label="Parent Title" fullWidth />} fullWidth />
+                </Grid> */}
+                {/* <Grid item xs={12} sm={12}>
                   <TextField {...register('metaTitle', { required: 'Required' })} error={errors.metaTitle ? true : false} id="outlined-error-helper-text" label="Meta Title" placeholder="Enter Meta Title" helperText={errors.title ? String(errors.title.message) : ''} fullWidth />
-                </Grid>
+                </Grid> */}
                 <Grid item xs={12} sm={12}>
                   <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
                     <Typography variant="h4">Choose Image</Typography>
                     <Button variant="contained" component="label" size="large">
                       Upload
-                      <input hidden accept="image/*" multiple type="file" {...register('content')} />
+                      <input hidden accept="image/*" multiple type="file" {...register('image')} />
                     </Button>
                   </Stack>
                 </Grid>

@@ -25,7 +25,6 @@ import { resetAuthState } from '@features/redux/slices/auth';
 const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const { role } = useAppSelector(getAuthState);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -177,11 +176,7 @@ const MiniDrawer: React.FunctionComponent<MiniDrawerInterface> = ({ children }) 
           <DrawerHeader>
             <IconButton onClick={handleDrawerClose}>{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}</IconButton>
           </DrawerHeader>
-          {navMainItems.map(({ Icon, label, divider, link, roleNav }, index) => {
-            if (!roleNav.includes(role)) {
-              return <React.Fragment key={index} />;
-            }
-
+          {navMainItems.map(({ Icon, label, divider, link }, index) => {
             return (
               <React.Fragment key={index}>
                 {divider && <Divider />}
